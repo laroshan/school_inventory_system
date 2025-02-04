@@ -7,6 +7,7 @@ if (isset($_SESSION['user_id'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <?php
@@ -16,16 +17,17 @@ if (isset($_SESSION['user_id'])) {
     ?>
 
 </head>
+
 <body>
     <div class="auth-bg d-flex min-vh-100 align-items-center justify-content-center">
         <div class="auth-container p-4 rounded shadow-lg">
             <a href="index.php" class="auth-brand d-flex justify-content-center mb-4">
-            <span class="logo-dark">
-            <span class="logo-lg"><img src="assets/images/sis_logo.png" alt="dark logo"></span>
-        </span>                    </a>
-        <h3 class="text-center mb-4 fw-bold text-primary" style="font-size: 1.75rem;">School Inventory System</h3>
+                <span class="logo-dark">
+                    <span class="logo-lg"><img src="assets/images/sis_logo.png" alt="dark logo"></span>
+                </span> </a>
+            <h3 class="text-center mb-4 fw-bold text-primary" style="font-size: 1.75rem;">School Inventory System</h3>
 
-        <h4 class="text-center mb-4 fw-semibold text-dark" style="font-size: 1.5rem;">
+            <h4 class="text-center mb-4 fw-semibold text-dark" style="font-size: 1.5rem;">
                 Sign In
             </h4>
             <?php
@@ -57,4 +59,5 @@ if (isset($_SESSION['user_id'])) {
 
     <script src="assets/js/main.js"></script>
 </body>
+
 </html>

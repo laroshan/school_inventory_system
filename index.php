@@ -74,4 +74,5 @@ $low_stock = $pdo->query("SELECT COUNT(*) FROM inventory WHERE quantity < 5 AND 
 
 
 </body>
+
 </html>

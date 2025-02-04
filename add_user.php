@@ -2,12 +2,14 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add User</title>
     <link rel="stylesheet" href="app.css">
 </head>
+
 <body class="auth-bg">
     <div class="auth-container">
         <div class="auth-brand text-center">
@@ -36,4 +38,5 @@
         </div>
     </div>
 </body>
+
 </html>

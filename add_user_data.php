@@ -12,7 +12,7 @@ try {
     $stmt->execute([
         'username' => $username,
         'password' => $hashed_password,
-        'role'     => 'admin'
+        'role' => 'admin'
     ]);
     echo "User created successfully.";
 } catch (PDOException $e) {

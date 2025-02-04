@@ -8,40 +8,40 @@
         </span>
     </a>
 
-<!-- Sidebar Toggle Buttons -->
+    <!-- Sidebar Toggle Buttons -->
 
-<button class="sidenav-toggle-button">
-<i class="fas fa-bars"></i>
-</button>
+    <button class="sidenav-toggle-button">
+        <i class="fas fa-bars"></i>
+    </button>
 
-<button class="button-close-fullsidebar sidenav-close">
-    <i class="fas fa-times"></i>
-</button>
-             
+    <button class="button-close-fullsidebar sidenav-close">
+        <i class="fas fa-times"></i>
+    </button>
 
-<div data-simplebar>
 
-<!-- User -->
-<div class="sidenav-user">
-    <div class="dropdown-center text-center">
-        <a class="topbar-link dropdown-toggle text-reset drop-arrow-none px-2" data-bs-toggle="dropdown"
-            type="button" aria-haspopup="false" aria-expanded="false">
-            <img src="assets/images/avatar.jpg" width="46" class="rounded-circle" alt="user-image">
-            <span class="d-flex gap-1 sidenav-user-name my-2">
-                <span>
-                    <span class="mb-0 fw-semibold lh-base fs-15">User 1</span>
-                    <p class="my-0 fs-13 text-muted">Admin</p>
-                </span>
-            </span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-end">
-            <a href="scripts/logout.php" class="dropdown-item active fw-semibold text-danger">
-                <i class="ri-logout-box-line me-1 fs-16 align-middle"></i>
-                <span class="align-middle">Sign Out</span>
-            </a>
+    <div data-simplebar>
+
+        <!-- User -->
+        <div class="sidenav-user">
+            <div class="dropdown-center text-center">
+                <a class="topbar-link dropdown-toggle text-reset drop-arrow-none px-2" data-bs-toggle="dropdown"
+                    type="button" aria-haspopup="false" aria-expanded="false">
+                    <img src="assets/images/avatar.jpg" width="46" class="rounded-circle" alt="user-image">
+                    <span class="d-flex gap-1 sidenav-user-name my-2">
+                        <span>
+                            <span class="mb-0 fw-semibold lh-base fs-15">User 1</span>
+                            <p class="my-0 fs-13 text-muted">Admin</p>
+                        </span>
+                    </span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <a href="scripts/logout.php" class="dropdown-item active fw-semibold text-danger">
+                        <i class="ri-logout-box-line me-1 fs-16 align-middle"></i>
+                        <span class="align-middle">Sign Out</span>
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
         <!-- Sidebar Menu -->
         <ul class="side-nav">
@@ -114,4 +114,3 @@
     </div>
 </div>
 <!-- Sidenav Menu End -->
-

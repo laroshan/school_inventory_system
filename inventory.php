@@ -2,6 +2,7 @@
 <html lang="en">
 
 <?php include 'header.php'; ?>
+
 <body>
     <div class="wrapper">
         <?php
@@ -89,4 +90,3 @@
 </body>
 
 </html>
-

@@ -5,7 +5,7 @@ require 'includes/db_connect.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    $role     = $_POST['role'];
+    $role = $_POST['role'];
 
     // Validate inputs
     if (!empty($username) && !empty($password) && !empty($role)) {
@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->execute([
                 'username' => $username,
                 'password' => $hashed_password,
-                'role'     => $role
+                'role' => $role
             ]);
             header("Location: add_user.php?success=1");
             exit();

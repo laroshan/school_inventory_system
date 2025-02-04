@@ -22,69 +22,72 @@
                         <div class="card position-relative">
                             <form action="" method="POST" onsubmit="return validateForm()">
                                 <div class="card-body">
-                           
-                                <h3 class="card-title mb-0 flex-grow-1"> Add to Inventory </h4>
-                                <br/>
-                                    <div class="row">
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 mt-sm-0 mt-3">
-                                            <div class="mb-2">
-                                                <label class="form-label">Inventory Date :</label>
-                                                <input type="text" id="inventoryDate" name="inventoryDate"
-                                                    class="form-control datepicker" placeholder="Select Date" required>
-                                            </div>
 
-                                            <div class="mb-2">
-                                                <label for="status" class="form-label">Status</label>
-                                                <select class="form-select" id="status" name="status" required>
-                                                    <option value="">Select Status</option>
-                                                    <option value="In Stock">In Stock</option>
-                                                    <option value="Out of Stock">Out of Stock</option>
-                                                </select>
-                                            </div>
+                                    <h3 class="card-title mb-0 flex-grow-1"> Add to Inventory </h4>
+                                        <br />
+                                        <div class="row">
+                                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 mt-sm-0 mt-3">
+                                                <div class="mb-2">
+                                                    <label class="form-label">Inventory Date :</label>
+                                                    <input type="text" id="inventoryDate" name="inventoryDate"
+                                                        class="form-control datepicker" placeholder="Select Date"
+                                                        required>
+                                                </div>
 
-                                            <div>
-                                                <label for="category" class="form-label">Category</label>
-                                                <select class="form-select" id="category" name="category" required>
-                                                    <option value="">Select Category</option>
-                                                    <option value="Electronics">Electronics</option>
-                                                    <option value="Furniture">Furniture</option>
-                                                    <option value="Stationery">Stationery</option>
-                                                    <option value="Tools">Tools</option>
-                                                    <option value="Other">Other</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
+                                                <div class="mb-2">
+                                                    <label for="status" class="form-label">Status</label>
+                                                    <select class="form-select" id="status" name="status" required>
+                                                        <option value="">Select Status</option>
+                                                        <option value="In Stock">In Stock</option>
+                                                        <option value="Out of Stock">Out of Stock</option>
+                                                    </select>
+                                                </div>
 
-                                    <div class="mt-4">
-                                        <div class="table-responsive">
-                                            <table class="table text-center table-nowrap align-middle mb-0"
-                                                id="itemTable">
-                                                <thead>
-                                                    <tr class="bg-light bg-opacity-50">
-                                                        <th scope="col" class="border-0" style="width: 70px;">#</th>
-                                                        <th scope="col" class="border-0 text-start">Item Name</th>
-                                                        <th scope="col" class="border-0">Description</th>
-                                                        <th scope="col" class="border-0" style="width: 140px">Quantity
-                                                        </th>
-                                                        <th scope="col" class="border-0" style="width: 140px;">Unit
-                                                            Price</th>
-                                                        <th scope="col" class="border-0" style="width: 240px">Amount
-                                                        </th>
-                                                        <th scope="col" class="border-0" style="width: 50px;">•••</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="itemTableBody">
-                                                    <!-- Item rows will be dynamically added here -->
-                                                </tbody>
-                                            </table><!--end table-->
-
-                                            <div class="p-2">
-                                                <button type="button" class="btn btn-primary" id="addItemBtn"><i
-                                                        class="ti ti-circle-plus me-1"></i> Add Items</button>
+                                                <div>
+                                                    <label for="category" class="form-label">Category</label>
+                                                    <select class="form-select" id="category" name="category" required>
+                                                        <option value="">Select Category</option>
+                                                        <option value="Electronics">Electronics</option>
+                                                        <option value="Furniture">Furniture</option>
+                                                        <option value="Stationery">Stationery</option>
+                                                        <option value="Tools">Tools</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+
+                                        <div class="mt-4">
+                                            <div class="table-responsive">
+                                                <table class="table text-center table-nowrap align-middle mb-0"
+                                                    id="itemTable">
+                                                    <thead>
+                                                        <tr class="bg-light bg-opacity-50">
+                                                            <th scope="col" class="border-0" style="width: 70px;">#</th>
+                                                            <th scope="col" class="border-0 text-start">Item Name</th>
+                                                            <th scope="col" class="border-0">Description</th>
+                                                            <th scope="col" class="border-0" style="width: 140px">
+                                                                Quantity
+                                                            </th>
+                                                            <th scope="col" class="border-0" style="width: 140px;">Unit
+                                                                Price</th>
+                                                            <th scope="col" class="border-0" style="width: 240px">Amount
+                                                            </th>
+                                                            <th scope="col" class="border-0" style="width: 50px;">•••
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="itemTableBody">
+                                                        <!-- Item rows will be dynamically added here -->
+                                                    </tbody>
+                                                </table><!--end table-->
+
+                                                <div class="p-2">
+                                                    <button type="button" class="btn btn-primary" id="addItemBtn"><i
+                                                            class="ti ti-circle-plus me-1"></i> Add Items</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                 </div> <!-- end card-body-->
                                 <div class="mb-5">
                                     <div class="d-flex justify-content-center gap-2">
