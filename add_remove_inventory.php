@@ -85,12 +85,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div>
-                                        <label class="form-label" for="note"> Note : </label>
-                                        <textarea class="form-control" id="note" name="note"
-                                            placeholder="Additional notes " rows="3"></textarea>
-                                    </div>
                                 </div> <!-- end card-body-->
                                 <div class="mb-5">
                                     <div class="d-flex justify-content-center gap-2">

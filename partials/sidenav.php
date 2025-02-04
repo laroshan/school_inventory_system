@@ -57,7 +57,7 @@
             </li>
             <li class="side-nav-item">
                 <a href="add_remove_inventory.php" class="side-nav-link">
-                    <i class="fas fa-plus-circle"></i> Add/Remove Inventory
+                    <i class="fas fa-plus-circle"></i> Add To Inventory
                 </a>
             </li>
             <li class="side-nav-item">

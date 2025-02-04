@@ -19,8 +19,8 @@
   --ct-light: #eef2f7;
   --ct-dark: #313a46;
   --ct-white: #fff;
-  --ct-logo-lg-height: 100px;
-  --ct-logo-sm-height: 50px;
+  --ct-logo-lg-height: 150px;
+  --ct-logo-sm-height: 200px;
   --ct-sidenav-width: 245px;
   --ct-sidenav-width-sm: 80px;
   --ct-topbar-height: 85px;
@@ -100,14 +100,33 @@ a:hover {
   box-shadow: var(--ct-box-shadow);
   max-width: 400px;
   width: 100%;
+  text-align: center; /* Center align text and elements */
 }
 
 .auth-brand {
   margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center; /* Center the logo */
 }
 
 .auth-brand img {
   height: var(--ct-logo-sm-height);
+}
+
+/* Sign-In Button */
+.btn-primary {
+  background-color: var(--ct-primary);
+  border-color: var(--ct-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.btn-primary:hover {
+  background-color: var(--ct-white);
+  color: var(--ct-primary);
+  border-color: var(--ct-primary);
 }
 
 /* Footer Styles */
@@ -116,6 +135,8 @@ a:hover {
   padding: 1rem;
   border-top: var(--ct-border-width) solid var(--ct-border-color);
   text-align: center;
+  position: relative;
+  z-index: 999; /* Ensure footer is above the sidebar */
 }
 
 .footer .page-container {
@@ -221,7 +242,7 @@ a:hover {
   z-index: 1000;
 }
 .sidenav-menu.active {
-  transform: translateX(-100%);
+  transform: translateX(0);
 }
 
 .sidenav-toggle-button {

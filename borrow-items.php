@@ -20,7 +20,7 @@
                         <div class="card position-relative">
                             <form action="inventory_process.php" method="POST">
                                 <div class="card-body">
-                                <h3 class="card-title mb-0 flex-grow-1">Inventory</h4>
+                                <h3 class="card-title mb-0 flex-grow-1">Borrow Items</h4>
                                 <br/>
 
                                     <div class="row">
