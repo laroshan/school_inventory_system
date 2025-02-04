@@ -51,7 +51,25 @@
                     "Unit Price",
                     "Amount",
                     "Status",
-                    "Inventory Date"
+                    "Inventory Date",
+                    {
+                        name: "Actions",
+                        formatter: (cell, row) => {
+                            const id = row.cells[0].data; // Get the ID from the first column
+                            return gridjs.html(`
+                                <div class="d-flex gap-2">
+                                    <a href="edit_inventory.php?edit_id=${id}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a href="delete_inventory.php?delete_id=${id}" 
+                                       class="btn btn-sm btn-danger" 
+                                       onclick="return confirm('Are you sure you want to delete this item?');">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            `);
+                        }
+                    }
                 ],
                 server: {
                     url: 'inventory_data.php',

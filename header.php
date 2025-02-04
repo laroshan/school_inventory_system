@@ -19,5 +19,5 @@
 
     <script src="path/to/bootstrap.bundle.min.js"></script>
 
-    <script src="assets/js/sidebar-toggle.js"></script> <!-- Place the script in an external file OR add inline JS -->
+    <script src="assets/js/sidebar-toggle.js"></script>
 </head>

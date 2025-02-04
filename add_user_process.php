@@ -5,10 +5,9 @@ require 'includes/db_connect.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    $role = $_POST['role'];
 
     // Validate inputs
-    if (!empty($username) && !empty($password) && !empty($role)) {
+    if (!empty($username) && !empty($password)) {
         // Hash the password
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
@@ -18,9 +17,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->execute([
                 'username' => $username,
                 'password' => $hashed_password,
-                'role' => $role
+                'role' => 'user'
             ]);
-            header("Location: add_user.php?success=1");
+            header("Location: index.php?success=1");
             exit();
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();

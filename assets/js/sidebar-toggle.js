@@ -1,34 +1,19 @@
 document.addEventListener("DOMContentLoaded", function () {
-  let sidebar = document.querySelector(".sidenav-menu");
-  let toggleButton = document.querySelector(".sidenav-toggle-button");
-  let closeButton = document.querySelector(".sidenav-close");
+  const sidenavToggleButton = document.querySelector(".sidenav-toggle-button");
+  const sidenavMenu = document.querySelector(".sidenav-menu");
+  const buttonCloseFullsidebar = document.querySelector(
+    ".button-close-fullsidebar"
+  );
 
-  // Sidebar Toggle Button
-  if (toggleButton) {
-    toggleButton.addEventListener("click", function () {
-      sidebar.classList.toggle("active");
+  if (sidenavToggleButton && sidenavMenu) {
+    sidenavToggleButton.addEventListener("click", function () {
+      sidenavMenu.classList.toggle("active");
     });
   }
 
-  // Sidebar Close Button
-  if (closeButton) {
-    closeButton.addEventListener("click", function () {
-      sidebar.classList.remove("active");
+  if (buttonCloseFullsidebar && sidenavMenu) {
+    buttonCloseFullsidebar.addEventListener("click", function () {
+      sidenavMenu.classList.remove("active");
     });
   }
-
-  // Handle dropdown toggles
-  document
-    .querySelectorAll(".side-nav-item a[data-bs-toggle='collapse']")
-    .forEach((link) => {
-      link.addEventListener("click", function () {
-        let icon = this.querySelector(".fa-chevron-down");
-        setTimeout(() => {
-          icon.classList.toggle(
-            "rotate",
-            this.nextElementSibling.classList.contains("show")
-          );
-        }, 300);
-      });
-    });
 });

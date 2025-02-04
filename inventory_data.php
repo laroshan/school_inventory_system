@@ -1,6 +1,7 @@
 <?php
 // Include the database connection file
 require_once 'includes/db_connect.php';
+
 // Set the content type to JSON
 header('Content-Type: application/json');
 

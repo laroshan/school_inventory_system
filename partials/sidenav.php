@@ -56,7 +56,7 @@
                 </a>
             </li>
             <li class="side-nav-item">
-                <a href="add_remove_inventory.php" class="side-nav-link">
+                <a href="add_inventory.php" class="side-nav-link">
                     <i class="fas fa-plus-circle"></i> Add To Inventory
                 </a>
             </li>
@@ -76,13 +76,13 @@
                 </a>
                 <div class="collapse" id="sidebarContacts">
                     <ul class="sub-menu">
-                        <li><a href="apps-user-contacts.php">Contacts</a></li>
-                        <li><a href="apps-user-profile.php">Profile</a></li>
+                        <li><a href="404_page.php">Contacts</a></li>
+                        <li><a href="404_page.php">Profile</a></li>
                     </ul>
                 </div>
             </li>
             <li class="side-nav-item">
-                <a href="apps-file-manager.php" class="side-nav-link">
+                <a href="404_page.php" class="side-nav-link">
                     <i class="fas fa-folder"></i> File Manager
                 </a>
             </li>
@@ -92,12 +92,12 @@
                 </a>
                 <div class="collapse" id="sidebarCharts">
                     <ul class="sub-menu">
-                        <li><a href="charts-apex-area.php">Inventory Distribution</a></li>
-                        <li><a href="charts-apex-bar.php">Cost Chart</a></li>
+                        <li><a href="404_page.php">Inventory Distribution</a></li>
+                        <li><a href="404_page.php">Cost Chart</a></li>
                     </ul>
                 </div>
             </li>
-            <li class="side-nav-item">
+            <!-- <li class="side-nav-item">
                 <a data-bs-toggle="collapse" href="#sidebarTables" class="side-nav-link">
                     <i class="fas fa-table"></i> Sample Content <i class="fas fa-chevron-down float-end"></i>
                 </a>
@@ -107,7 +107,7 @@
                         <li><a href="tables-gridjs.php">Sample 2</a></li>
                     </ul>
                 </div>
-            </li>
+            </li> -->
         </ul>
 
         <div class="clearfix"></div>
