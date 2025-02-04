@@ -22,7 +22,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: index.php?success=1");
             exit();
         } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+            error_log("Database Connection Error: " . $e->getMessage(), 0);
+
+            // Redirect to the error page
+            header("Location: error.php");
+            exit();
         }
     } else {
         echo "All fields are required!";
