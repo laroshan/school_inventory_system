@@ -1,32 +1,31 @@
 <?php
 require 'includes/db_connect.php';
 
-// Check if the request is POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
+    $email = $_POST['email'];
     $password = $_POST['password'];
+    $role = $_POST['role'];
 
-    // Validate inputs
-    if (!empty($username) && !empty($password)) {
-        // Hash the password
-        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+    if (!empty($username) && !empty($email) && !empty($password)) {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-        try {
-            // Insert user into database
-            $stmt = $pdo->prepare("INSERT INTO users (username, password, role) VALUES (:username, :password, :role)");
-            $stmt->execute([
-                'username' => $username,
-                'password' => $hashed_password,
-                'role' => 'user'
-            ]);
-            header("Location: index.php?success=1");
-            exit();
-        } catch (PDOException $e) {
-            error_log("Database Connection Error: " . $e->getMessage(), 0);
-
-            // Redirect to the error page
-            header("Location: error.php");
-            exit();
+            try {
+                $stmt = $pdo->prepare("INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, :role)");
+                $stmt->execute([
+                    'username' => $username,
+                    'email' => $email,
+                    'password' => $hashed_password,
+                    'role' => $role
+                ]);
+                header("Location: user_details.php?success=1");
+                exit();
+            } catch (PDOException $e) {
+                echo "Error: " . $e->getMessage();
+            }
+        } else {
+            echo "Invalid email format!";
         }
     } else {
         echo "All fields are required!";

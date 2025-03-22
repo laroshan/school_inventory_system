@@ -1,3 +1,8 @@
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <!-- Sidenav Menu Start -->
 <div class="sidenav-menu" id="sidebar">
 
@@ -29,8 +34,8 @@
                     <img src="assets/images/avatar.jpg" width="46" class="rounded-circle" alt="user-image">
                     <span class="d-flex gap-1 sidenav-user-name my-2">
                         <span>
-                            <span class="mb-0 fw-semibold lh-base fs-15">User 1</span>
-                            <p class="my-0 fs-13 text-muted">Admin</p>
+                            <span class="mb-0 fw-semibold lh-base fs-15"><?= $_SESSION['username'] ?></span>
+                            <p class="my-0 fs-13 text-muted"><?= $_SESSION['role'] ?></p>
                         </span>
                     </span>
                 </a>
@@ -61,8 +66,8 @@
                 </a>
             </li>
             <li class="side-nav-item">
-                <a href="borrow-items.php" class="side-nav-link">
-                    <i class="fas fa-hand-holding"></i> Borrow Items
+                <a href="lended_item_list.php" class="side-nav-link">
+                    <i class="fas fa-hand-holding"></i> Lended Items List
                 </a>
             </li>
             <li class="side-nav-item">
@@ -71,19 +76,8 @@
                 </a>
             </li>
             <li class="side-nav-item">
-                <a data-bs-toggle="collapse" href="#sidebarContacts" class="side-nav-link">
-                    <i class="fas fa-users"></i> Users <i class="fas fa-chevron-down float-end"></i>
-                </a>
-                <div class="collapse" id="sidebarContacts">
-                    <ul class="sub-menu">
-                        <li><a href="404_page.php">Contacts</a></li>
-                        <li><a href="404_page.php">Profile</a></li>
-                    </ul>
-                </div>
-            </li>
-            <li class="side-nav-item">
-                <a href="404_page.php" class="side-nav-link">
-                    <i class="fas fa-folder"></i> File Manager
+                <a href="user_details.php" class="side-nav-link">
+                    <i class="fas fa-users"></i> User Details</i>
                 </a>
             </li>
             <li class="side-nav-item">
@@ -92,22 +86,15 @@
                 </a>
                 <div class="collapse" id="sidebarCharts">
                     <ul class="sub-menu">
-                        <li><a href="404_page.php">Inventory Distribution</a></li>
-                        <li><a href="404_page.php">Cost Chart</a></li>
+                        <li><a href="chart_stock_levels.php">Stock Levels Over Time</a></li>
+                        <li><a href="chart_category_distribution.php">Category-wise Inventory Distribution</a></li>
+                        <li><a href="chart_monthly_borrowing.php">Monthly Borrowing Trends</a></li>
+                        <li><a href="chart_top_borrowed.php">Top Borrowed Items</a></li>
+                        <li><a href="chart_loan_vs_available.php">Loan vs. Available Inventory</a></li>
+                        <li><a href="chart_due_vs_overdue.php">Due vs. Overdue Loans</a></li>
                     </ul>
                 </div>
             </li>
-            <!-- <li class="side-nav-item">
-                <a data-bs-toggle="collapse" href="#sidebarTables" class="side-nav-link">
-                    <i class="fas fa-table"></i> Sample Content <i class="fas fa-chevron-down float-end"></i>
-                </a>
-                <div class="collapse" id="sidebarTables">
-                    <ul class="sub-menu">
-                        <li><a href="tables-basic.php">Sample 1</a></li>
-                        <li><a href="tables-gridjs.php">Sample 2</a></li>
-                    </ul>
-                </div>
-            </li> -->
         </ul>
 
         <div class="clearfix"></div>

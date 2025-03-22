@@ -5,13 +5,21 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+// Role-based authentication
+if ($_SESSION['role'] !== 'admin') {
+    header('Location: unauthorized.php');
+    exit();
+}
+
 require_once 'includes/db_connect.php';
 
 // Fetch item counts dynamically
 $total_items = $pdo->query("SELECT COUNT(*) FROM inventory")->fetchColumn();
-$borrowed_items = $pdo->query("SELECT COUNT(*) FROM inventory WHERE status = 'borrowed'")->fetchColumn();
+$borrowed_items = $pdo->query("SELECT COUNT(*) FROM loan_records WHERE status = 'borrowed'")->fetchColumn();
+$overdue_items = $pdo->query("SELECT COUNT(*) FROM loan_records WHERE status = 'overdue'")->fetchColumn();
 $out_of_stock = $pdo->query("SELECT COUNT(*) FROM inventory WHERE quantity = 0")->fetchColumn();
 $low_stock = $pdo->query("SELECT COUNT(*) FROM inventory WHERE quantity < 5 AND quantity > 0")->fetchColumn();
+$non_lendable_items = $pdo->query("SELECT COUNT(*) FROM inventory WHERE quantity = 0")->fetchColumn();
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +31,8 @@ $low_stock = $pdo->query("SELECT COUNT(*) FROM inventory WHERE quantity < 5 AND 
         <div class="page-content">
             <div class="page-container">
                 <h1 class="text-center text-3xl font-bold p-6 text-dark">School Inventory Dashboard</h1>
-
+                <!-- Display logged-in user information -->
+                <p class="text-center">Welcome, <?= $_SESSION['username'] ?>!</p>
                 <!-- Dashboard Stats -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
                     <div class="card dashboard-card border-0 shadow-lg">
@@ -43,6 +52,15 @@ $low_stock = $pdo->query("SELECT COUNT(*) FROM inventory WHERE quantity < 5 AND 
                         <div class="card-body text-center">
                             <i class="ri-bookmark-line text-success icon-lg"></i>
                             <h2 class="display-4 font-weight-bold"><?= $borrowed_items ?></h2>
+                        </div>
+                    </div>
+                    <div class="card dashboard-card border-0 shadow-lg">
+                        <div class="card-header bg-danger text-white">
+                            <h4 class="card-title">Over Due Items</h4>
+                        </div>
+                        <div class="card-body text-center">
+                            <i class="ri-bookmark-line text-success icon-lg"></i>
+                            <h2 class="display-4 font-weight-bold"><?= $overdue_items ?></h2>
                         </div>
                     </div>
 
@@ -65,14 +83,22 @@ $low_stock = $pdo->query("SELECT COUNT(*) FROM inventory WHERE quantity < 5 AND 
                             <h2 class="display-4 font-weight-bold"><?= $low_stock ?></h2>
                         </div>
                     </div>
+
+                    <div class="card dashboard-card border-0 shadow-lg">
+                        <div class="card-header bg-warning text-dark">
+                            <h4 class="card-title">Non-Lendable Items</h4>
+                        </div>
+                        <div class="card-body text-center">
+                            <i class="ri-error-warning-line text-warning icon-lg"></i>
+                            <h2 class="display-4 font-weight-bold"><?= $non_lendable_items ?></h2>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <?php include('partials/footer.php'); ?>
     </div>
-
-
 </body>
 
 </html>

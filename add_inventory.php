@@ -34,15 +34,6 @@
                                                         required>
                                                 </div>
 
-                                                <div class="mb-2">
-                                                    <label for="status" class="form-label">Status</label>
-                                                    <select class="form-select" id="status" name="status" required>
-                                                        <option value="">Select Status</option>
-                                                        <option value="In Stock">In Stock</option>
-                                                        <option value="Out of Stock">Out of Stock</option>
-                                                    </select>
-                                                </div>
-
                                                 <div>
                                                     <label for="category" class="form-label">Category</label>
                                                     <select class="form-select" id="category" name="category" required>
@@ -210,7 +201,6 @@ require_once 'includes/db_connect.php';
 // Save to database logic
 if (isset($_POST['saveInventory'])) {
     $inventoryDate = $_POST['inventoryDate'];
-    $status = $_POST['status'];
     $category = $_POST['category'];
     $itemNames = $_POST['itemName'];
     $itemDescriptions = $_POST['itemDescription'];
@@ -224,6 +214,7 @@ if (isset($_POST['saveInventory'])) {
     $stmt = $pdo->prepare($sql);
 
     for ($i = 0; $i < count($itemNames); $i++) {
+        $status = ($quantities[$i] > 0) ? 'In Stock' : 'Out of Stock';
         $stmt->execute([
             ':itemName' => $itemNames[$i],
             ':category' => $category,
@@ -235,7 +226,6 @@ if (isset($_POST['saveInventory'])) {
             ':inventoryDate' => $inventoryDate
         ]);
     }
-
     echo "<script>alert('Inventory saved successfully!');</script>";
 }
 ?>

@@ -6,7 +6,7 @@
 <body>
     <div class="wrapper">
         <?php
-        $title = "Inventory";
+        $title = "User Details";
         include('partials/sidenav.php');
         ?>
         <div class="page-content">
@@ -15,7 +15,7 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header border-bottom border-dashed">
-                                <h3 class="card-title mb-0 flex-grow-1">Inventory</h3>
+                                <h3 class="card-title mb-0 flex-grow-1">User Details</h3>
                             </div>
                             <div class="card-body">
                                 <!-- Ensure the container is empty -->
@@ -44,30 +44,22 @@
             new gridjs.Grid({
                 columns: [
                     "ID",
-                    "Item Name",
-                    "Category",
-                    "Description",
-                    "Quantity",
-                    "Unit Price",
-                    "Amount",
-                    "Status",
-                    "Inventory Date",
+                    "Username",
+                    "Email",
+                    "Role",
+                    "Created At",
                     {
                         name: "Actions",
                         formatter: (cell, row) => {
                             const id = row.cells[0].data; // Get ID from the first column
-                            const quantity = row.cells[4].data; // Get item quantity
                             return gridjs.html(`
                                 <div class="d-flex gap-2 action-buttons">
-                                    <a href="edit_inventory.php?edit_id=${id}" class="btn btn-sm btn-primary">
+                                    <a href="edit_user.php?edit_id=${id}" class="btn btn-sm btn-primary">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
-                                    <a href="lending_page.php?id=${id}" class="btn btn-sm btn-success ${quantity == 0 ? 'disabled' : ''}">
-                                        <i class="fas fa-hand-holding"></i> Lend
-                                    </a>
-                                    <a href="delete_inventory.php?delete_id=${id}" 
+                                    <a href="delete_user.php?delete_id=${id}" 
                                        class="btn btn-sm btn-danger" 
-                                       onclick="return confirm('Are you sure you want to delete this item?');">
+                                       onclick="return confirm('Are you sure you want to delete this user?');">
                                         <i class="fas fa-trash"></i> Delete
                                     </a>
                                 </div>
@@ -76,17 +68,13 @@
                     }
                 ],
                 server: {
-                    url: 'inventory_data.php',
-                    then: data => data.map(item => [
-                        item.id,
-                        item.item_name,
-                        item.category,
-                        item.item_description,
-                        item.quantity,
-                        `$${item.unit_price}`,
-                        `$${item.amount}`,
-                        item.status,
-                        item.inventory_date
+                    url: 'user_data.php',
+                    then: data => data.map(user => [
+                        user.id,
+                        user.username,
+                        user.email,
+                        user.role,
+                        user.created_at
                     ])
                 },
                 search: { enabled: true }, // 🔍 Enable search
@@ -95,7 +83,7 @@
                 resizable: true,
                 language: {
                     'search': {
-                        'placeholder': 'Search inventory...'
+                        'placeholder': 'Search users...'
                     },
                     'pagination': {
                         'previous': 'Previous',
