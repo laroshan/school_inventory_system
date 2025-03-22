@@ -23,30 +23,34 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const ctx = document.getElementById('topBorrowedChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ["Item A", "Item B", "Item C", "Item D", "Item E"], // Example items
-                    datasets: [{
-                        label: 'Times Borrowed',
-                        data: [120, 100, 90, 80, 70], // Example data
-                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: true },
-                        title: { display: true, text: 'Top Borrowed Items' }
-                    },
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
+            fetch('chart_data_top_borrowed.php')
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById('topBorrowedChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: data.labels, // Item names
+                            datasets: [{
+                                label: 'Times Borrowed',
+                                data: data.values, // Borrowed counts
+                                backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { display: true },
+                                title: { display: true, text: 'Top Borrowed Items' }
+                            },
+                            scales: {
+                                y: { beginAtZero: true }
+                            }
+                        }
+                    });
+                });
         });
     </script>
 </body>

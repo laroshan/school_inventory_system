@@ -23,24 +23,28 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const ctx = document.getElementById('dueVsOverdueChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ["Due", "Overdue"], // Example labels
-                    datasets: [{
-                        data: [80, 20], // Example data
-                        backgroundColor: ['#36A2EB', '#FF6384']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: true },
-                        title: { display: true, text: 'Due vs. Overdue Loans' }
-                    }
-                }
-            });
+            fetch('chart_data_due_vs_overdue.php')
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById('dueVsOverdueChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: data.labels, // Due and Overdue
+                            datasets: [{
+                                data: data.values, // Counts
+                                backgroundColor: ['#36A2EB', '#FF6384']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { display: true },
+                                title: { display: true, text: 'Due vs. Overdue Loans' }
+                            }
+                        }
+                    });
+                });
         });
     </script>
 </body>

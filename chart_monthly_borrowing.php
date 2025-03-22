@@ -23,30 +23,34 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const ctx = document.getElementById('monthlyBorrowingChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ["January", "February", "March", "April", "May"], // Example months
-                    datasets: [{
-                        label: 'Items Borrowed',
-                        data: [50, 70, 60, 90, 80], // Example data
-                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: true },
-                        title: { display: true, text: 'Monthly Borrowing Trends' }
-                    },
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
+            fetch('chart_data_monthly_borrowing.php')
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById('monthlyBorrowingChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: data.labels, // Months
+                            datasets: [{
+                                label: 'Items Borrowed',
+                                data: data.values, // Borrowed quantities
+                                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { display: true },
+                                title: { display: true, text: 'Monthly Borrowing Trends' }
+                            },
+                            scales: {
+                                y: { beginAtZero: true }
+                            }
+                        }
+                    });
+                });
         });
     </script>
 </body>
