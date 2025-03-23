@@ -40,7 +40,7 @@
             <button type="submit" class="btn btn-success w-100">Add User</button>
         </form>
         <div class="text-center mt-3">
-            <a href="dashboard.php">Back to Dashboard</a>
+            <a href="index.php">Back to Dashboard</a>
         </div>
     </div>
 </body>

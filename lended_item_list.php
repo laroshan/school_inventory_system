@@ -50,18 +50,20 @@
                     "Quantity Borrowed",
                     "Lending Date",
                     "Due Date",
+                    "Returned Date", // New column for returned date
                     "Status",
+                    "Comments", // Ensure comments column is included
                     {
                         name: "Actions",
                         formatter: (cell, row) => {
-                            const status = row.cells[7].data; // Get status from "Status" column
+                            const status = row.cells[8].data; // Adjusted index for "Status" column
                             const id = row.cells[0].data; // Get ID from the first column
 
                             if (status === 'requested') {
                                 return gridjs.html(`
                                     <form method="POST" action="process_request.php" class="d-flex gap-2" onsubmit="return validateApproveForm(this)">
                                         <input type="hidden" name="request_id" value="${id}">
-                                        <input type="date" name="due_date" class="form-control form-control-sm">
+                                        <input type="date" name="due_date" class="form-control form-control-sm" min="${new Date().toISOString().split('T')[0]}">
                                         <textarea name="comment" class="form-control form-control-sm" placeholder="Optional comment"></textarea>
                                         <button type="submit" name="action" value="approve" class="btn btn-sm btn-success">Approve</button>
                                         <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger">Reject</button>
@@ -71,8 +73,8 @@
                                 return gridjs.html(`
                                     <form method="POST" action="update_record.php" class="d-flex gap-2">
                                         <input type="hidden" name="record_id" value="${id}">
-                                        <input type="date" name="due_date" class="form-control form-control-sm" value="${row.cells[6].data || ''}">
-                                        <textarea name="comment" class="form-control form-control-sm" placeholder="Optional comment">${row.cells[8]?.data || ''}</textarea>
+                                        <input type="date" name="due_date" class="form-control form-control-sm" value="${row.cells[6].data || ''}" min="${new Date().toISOString().split('T')[0]}">
+                                        <textarea name="comment" class="form-control form-control-sm" placeholder="Optional comment">${row.cells[9]?.data || ''}</textarea>
                                         <button type="submit" name="action" value="update" class="btn btn-sm btn-primary" disabled>Update</button>
                                     </form>
                                 `);
@@ -90,7 +92,9 @@
                         item.quantity_borrowed,
                         item.lending_date,
                         item.due_date,
-                        item.status
+                        item.returned_date, // Map returned date to the new column
+                        item.status,
+                        item.comments // Ensure comments are mapped correctly
                     ])
                 },
                 search: { enabled: true }, // Enable search
@@ -132,6 +136,11 @@
                 alert("Please select a due date before approving the request.");
                 return false; // Prevent form submission
             }
+            const today = new Date().toISOString().split('T')[0];
+            if (dueDate < today) {
+                alert("Due date cannot be in the past.");
+                return false; // Prevent form submission
+            }
             return true; // Allow form submission
         }
     </script>
@@ -139,15 +148,22 @@
 
 </html>
 <?php
+// Ensure session is started only if not already active
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Include the database connection file
 require_once 'includes/db_connect.php';
 
 // Set the content type to JSON
-header('Content-Type: application/json');
+if (!headers_sent()) { // Ensure headers are not already sent
+    header('Content-Type: application/json');
+}
 
 try {
     // Fetch lended items data
-    $sql = "SELECT lr.id, i.item_name, i.category, u.username AS borrower, lr.quantity_borrowed, lr.lending_date, lr.due_date, lr.status 
+    $sql = "SELECT lr.id, i.item_name, i.category, u.username AS borrower, lr.quantity_borrowed, lr.lending_date, lr.due_date, lr.returned_date, lr.status, lr.comments 
             FROM loan_records lr 
             JOIN inventory i ON lr.item_id = i.id 
             JOIN users u ON lr.borrower_id = u.id";
@@ -170,7 +186,10 @@ try {
 }
 ?>
 <?php
-session_start();
+// Ensure session is started only if not already active
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once 'includes/db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -183,6 +202,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($action === 'approve') {
             if (empty($dueDate)) {
                 echo "Error: Due date is required to approve the request.";
+                exit();
+            }
+
+            // Fetch the lending date for validation
+            $fetchLendingDate = "SELECT lending_date FROM loan_records WHERE id = :requestId";
+            $stmt = $pdo->prepare($fetchLendingDate);
+            $stmt->execute([':requestId' => $requestId]);
+            $lendingDate = $stmt->fetchColumn();
+
+            if ($dueDate < $lendingDate) {
+                echo "Error: Due date cannot be earlier than the lending date.";
                 exit();
             }
 

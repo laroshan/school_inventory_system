@@ -104,16 +104,6 @@ $role = $_SESSION['role'] ?? null;
                         <i class="fas fa-history"></i> Loan History
                     </a>
                 </li>
-                <li class="side-nav-item">
-                    <a href="borrow.php" class="side-nav-link">
-                        <i class="fas fa-hand-holding"></i> Borrow Items
-                    </a>
-                </li>
-                <li class="side-nav-item">
-                    <a href="return.php" class="side-nav-link">
-                        <i class="fas fa-undo"></i> Return Items
-                    </a>
-                </li>
             <?php elseif ($role === 'student'): ?>
                 <li class="side-nav-item">
                     <a href="inventory.php" class="side-nav-link">
@@ -123,16 +113,6 @@ $role = $_SESSION['role'] ?? null;
                 <li class="side-nav-item">
                     <a href="loan-history.php" class="side-nav-link">
                         <i class="fas fa-history"></i> Loan History
-                    </a>
-                </li>
-                <li class="side-nav-item">
-                    <a href="borrow.php" class="side-nav-link">
-                        <i class="fas fa-hand-holding"></i> Borrow Items
-                    </a>
-                </li>
-                <li class="side-nav-item">
-                    <a href="return.php" class="side-nav-link">
-                        <i class="fas fa-undo"></i> Return Items
                     </a>
                 </li>
             <?php endif; ?>
