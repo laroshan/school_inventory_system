@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') { // Ensure role is 'admin'
     header('Location: login.php');
     exit();
 }
@@ -71,8 +71,9 @@ if (isset($_POST['updateUser'])) {
                     <div class="mb-3">
                         <label for="role" class="form-label">Role</label>
                         <select name="role" id="role" class="form-control" required>
-                            <option value="user" <?= $user['role'] == 'user' ? 'selected' : '' ?>>User</option>
                             <option value="admin" <?= $user['role'] == 'admin' ? 'selected' : '' ?>>Admin</option>
+                            <option value="teacher" <?= $user['role'] == 'teacher' ? 'selected' : '' ?>>Teacher</option>
+                            <option value="student" <?= $user['role'] == 'student' ? 'selected' : '' ?>>Student</option>
                         </select>
                     </div>
                     <button type="submit" name="updateUser" class="btn btn-primary w-100">Update User</button>

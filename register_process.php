@@ -4,8 +4,9 @@ require 'includes/db_connect.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
+    $role = strtolower($_POST['role']); // Normalize role to lowercase
 
-    if (!empty($username) && !empty($password)) {
+    if (!empty($username) && !empty($password) && in_array($role, ['admin', 'teacher', 'student'])) {
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
         try {
@@ -13,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->execute([
                 'username' => $username,
                 'password' => $hashed_password,
-                'role' => 'user'  // Default role as user
+                'role' => $role // Assign the selected role
             ]);
             header("Location: login.php?success=1");
             exit();
@@ -21,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Error: " . $e->getMessage();
         }
     } else {
-        echo "All fields are required!";
+        echo "All fields are required, and role must be valid!";
     }
 }
 ?>

@@ -31,8 +31,10 @@
             <div class="mb-3">
                 <label for="role" class="form-label">Role</label>
                 <select name="role" id="role" class="form-control" required>
-                    <option value="user">User</option>
                     <option value="admin">Admin</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="student">Student</option>
+
                 </select>
             </div>
             <button type="submit" class="btn btn-success w-100">Add User</button>

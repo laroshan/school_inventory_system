@@ -2,6 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+$role = $_SESSION['role'] ?? null;
 ?>
 <!-- Sidenav Menu Start -->
 <div class="sidenav-menu" id="sidebar">
@@ -14,18 +15,14 @@ if (session_status() == PHP_SESSION_NONE) {
     </a>
 
     <!-- Sidebar Toggle Buttons -->
-
     <button class="sidenav-toggle-button">
         <i class="fas fa-bars"></i>
     </button>
-
     <button class="button-close-fullsidebar sidenav-close">
         <i class="fas fa-times"></i>
     </button>
 
-
     <div data-simplebar>
-
         <!-- User -->
         <div class="sidenav-user">
             <div class="dropdown-center text-center">
@@ -55,45 +52,94 @@ if (session_status() == PHP_SESSION_NONE) {
                     <i class="fas fa-home"></i> Dashboard
                 </a>
             </li>
+            <?php if ($role === 'admin'): ?>
+                <li class="side-nav-item">
+                    <a href="inventory.php" class="side-nav-link">
+                        <i class="fas fa-box"></i> View Inventory
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a href="add_inventory.php" class="side-nav-link">
+                        <i class="fas fa-plus-circle"></i> Add To Inventory
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a href="lended_item_list.php" class="side-nav-link">
+                        <i class="fas fa-hand-holding"></i> Lended Items List
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a href="add_user.php" class="side-nav-link">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a href="user_details.php" class="side-nav-link">
+                        <i class="fas fa-users"></i> User Details
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarCharts" class="side-nav-link">
+                        <i class="fas fa-chart-line"></i> Charts <i class="fas fa-chevron-down float-end"></i>
+                    </a>
+                    <div class="collapse" id="sidebarCharts">
+                        <ul class="sub-menu">
+                            <li><a href="chart_stock_levels.php">Stock Levels Over Time</a></li>
+                            <li><a href="chart_category_distribution.php">Category-wise Inventory Distribution</a></li>
+                            <li><a href="chart_monthly_borrowing.php">Monthly Borrowing Trends</a></li>
+                            <li><a href="chart_top_borrowed.php">Top Borrowed Items</a></li>
+                            <li><a href="chart_loan_vs_available.php">Loan vs. Available Inventory</a></li>
+                            <li><a href="chart_due_vs_overdue.php">Due vs. Overdue Loans</a></li>
+                        </ul>
+                    </div>
+                </li>
+            <?php elseif ($role === 'teacher'): ?>
+                <li class="side-nav-item">
+                    <a href="inventory.php" class="side-nav-link">
+                        <i class="fas fa-box"></i> View Inventory
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a href="loan-history.php" class="side-nav-link">
+                        <i class="fas fa-history"></i> Loan History
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a href="borrow.php" class="side-nav-link">
+                        <i class="fas fa-hand-holding"></i> Borrow Items
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a href="return.php" class="side-nav-link">
+                        <i class="fas fa-undo"></i> Return Items
+                    </a>
+                </li>
+            <?php elseif ($role === 'student'): ?>
+                <li class="side-nav-item">
+                    <a href="inventory.php" class="side-nav-link">
+                        <i class="fas fa-box"></i> View Inventory
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a href="loan-history.php" class="side-nav-link">
+                        <i class="fas fa-history"></i> Loan History
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a href="borrow.php" class="side-nav-link">
+                        <i class="fas fa-hand-holding"></i> Borrow Items
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a href="return.php" class="side-nav-link">
+                        <i class="fas fa-undo"></i> Return Items
+                    </a>
+                </li>
+            <?php endif; ?>
             <li class="side-nav-item">
-                <a href="inventory.php" class="side-nav-link">
-                    <i class="fas fa-box"></i> View Inventory
+                <a href="scripts/logout.php" class="side-nav-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
-            </li>
-            <li class="side-nav-item">
-                <a href="add_inventory.php" class="side-nav-link">
-                    <i class="fas fa-plus-circle"></i> Add To Inventory
-                </a>
-            </li>
-            <li class="side-nav-item">
-                <a href="lended_item_list.php" class="side-nav-link">
-                    <i class="fas fa-hand-holding"></i> Lended Items List
-                </a>
-            </li>
-            <li class="side-nav-item">
-                <a href="add_user.php" class="side-nav-link">
-                    <i class="fas fa-user-plus"></i> Register
-                </a>
-            </li>
-            <li class="side-nav-item">
-                <a href="user_details.php" class="side-nav-link">
-                    <i class="fas fa-users"></i> User Details</i>
-                </a>
-            </li>
-            <li class="side-nav-item">
-                <a data-bs-toggle="collapse" href="#sidebarCharts" class="side-nav-link">
-                    <i class="fas fa-chart-line"></i> Charts <i class="fas fa-chevron-down float-end"></i>
-                </a>
-                <div class="collapse" id="sidebarCharts">
-                    <ul class="sub-menu">
-                        <li><a href="chart_stock_levels.php">Stock Levels Over Time</a></li>
-                        <li><a href="chart_category_distribution.php">Category-wise Inventory Distribution</a></li>
-                        <li><a href="chart_monthly_borrowing.php">Monthly Borrowing Trends</a></li>
-                        <li><a href="chart_top_borrowed.php">Top Borrowed Items</a></li>
-                        <li><a href="chart_loan_vs_available.php">Loan vs. Available Inventory</a></li>
-                        <li><a href="chart_due_vs_overdue.php">Due vs. Overdue Loans</a></li>
-                    </ul>
-                </div>
             </li>
         </ul>
 

@@ -57,21 +57,33 @@
                         formatter: (cell, row) => {
                             const id = row.cells[0].data; // Get ID from the first column
                             const quantity = row.cells[4].data; // Get item quantity
-                            return gridjs.html(`
-                                <div class="d-flex gap-2 action-buttons">
-                                    <a href="edit_inventory.php?edit_id=${id}" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
-                                    <a href="lending_page.php?id=${id}" class="btn btn-sm btn-success ${quantity == 0 ? 'disabled' : ''}">
-                                        <i class="fas fa-hand-holding"></i> Lend
-                                    </a>
-                                    <a href="delete_inventory.php?delete_id=${id}" 
-                                       class="btn btn-sm btn-danger" 
-                                       onclick="return confirm('Are you sure you want to delete this item?');">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </a>
-                                </div>
-                            `);
+                            const role = "<?= $_SESSION['role'] ?>"; // Get user role from session
+
+                            if (role === 'admin') {
+                                return gridjs.html(`
+                                    <div class="d-flex gap-2 action-buttons">
+                                        <a href="edit_inventory.php?edit_id=${id}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <a href="lending_page.php?id=${id}" class="btn btn-sm btn-success ${quantity == 0 ? 'disabled' : ''}">
+                                            <i class="fas fa-hand-holding"></i> Lend
+                                        </a>
+                                        <a href="delete_inventory.php?delete_id=${id}" 
+                                           class="btn btn-sm btn-danger" 
+                                           onclick="return confirm('Are you sure you want to delete this item?');">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </a>
+                                    </div>
+                                `);
+                            } else {
+                                return gridjs.html(`
+                                    <div class="d-flex gap-2 action-buttons">
+                                        <a href="request_item.php?id=${id}" class="btn btn-sm btn-warning ${quantity == 0 ? 'disabled' : ''}">
+                                            <i class="fas fa-paper-plane"></i> Request
+                                        </a>
+                                    </div>
+                                `);
+                            }
                         }
                     }
                 ],

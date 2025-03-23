@@ -12,7 +12,7 @@ $user = $stmt->fetch();
 if ($user && password_verify($password, $user['password'])) {
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['username'] = $user['username'];
-    $_SESSION['role'] = $user['role'];
+    $_SESSION['role'] = strtolower($user['role']); // Normalize role to lowercase
     header('Location: ../index.php');
 } else {
     $_SESSION['login_error'] = 'Invalid username or password';

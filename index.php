@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id'])) {
 
 // Role-based authentication
 if ($_SESSION['role'] !== 'admin') {
-    header('Location: unauthorized.php');
+    header('Location: inventory.php');
     exit();
 }
 
@@ -44,7 +44,6 @@ $non_lendable_items = $pdo->query("SELECT COUNT(*) FROM inventory WHERE quantity
                             <h2 class="display-4 font-weight-bold"><?= $total_items ?></h2>
                         </div>
                     </div>
-
                     <div class="card dashboard-card border-0 shadow-lg">
                         <div class="card-header bg-success text-white">
                             <h4 class="card-title">Borrowed Items</h4>
