@@ -80,6 +80,23 @@
                                 `);
                             }
                         }
+                    },
+                    {
+                        name: "Mark as Returned",
+                        formatter: (cell, row) => {
+                            const status = row.cells[8].data; // Adjusted index for "Status" column
+                            const id = row.cells[0].data; // Get ID from the first column
+
+                            if (status === 'borrowed') {
+                                return gridjs.html(`
+                                    <form method="POST" action="update_record.php" class="d-flex gap-2">
+                                        <input type="hidden" name="record_id" value="${id}">
+                                        <button type="submit" name="action" value="mark_returned" class="btn btn-sm btn-warning">Mark as Returned</button>
+                                    </form>
+                                `);
+                            }
+                            return '';
+                        }
                     }
                 ],
                 server: {
