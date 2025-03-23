@@ -19,8 +19,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'password' => $hashed_password,
                     'role' => $role
                 ]);
-                header("Location: user_details.php?success=1");
-                exit();
+
+                // Check if the action is user registration or admin adding a user
+                if (isset($_POST['admin_action']) && $_POST['admin_action'] === 'add_user') {
+                    // Redirect admin back to the dashboard
+                    header("Location: user_details.php");
+                    exit();
+                } else {
+                    // Automatically log in the user after registration
+                    session_start();
+                    $_SESSION['user_id'] = $pdo->lastInsertId();
+                    $_SESSION['username'] = $username;
+                    $_SESSION['role'] = $role;
+                    header("Location: index.php");
+                    exit();
+                }
             } catch (PDOException $e) {
                 echo "Error: " . $e->getMessage();
             }

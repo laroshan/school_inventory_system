@@ -16,6 +16,7 @@
             <h3>Add New User</h3>
         </div>
         <form action="add_user_process.php" method="POST">
+            <input type="hidden" name="admin_action" value="add_user">
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
                 <input type="text" name="username" id="username" class="form-control" required>
@@ -34,7 +35,6 @@
                     <option value="admin">Admin</option>
                     <option value="teacher">Teacher</option>
                     <option value="student">Student</option>
-
                 </select>
             </div>
             <button type="submit" class="btn btn-success w-100">Add User</button>
