@@ -32,7 +32,7 @@
                         data: {
                             labels: data.labels, // Due and Overdue
                             datasets: [{
-                                data: data.values, // Counts
+                                data: data.values, // Counts from database
                                 backgroundColor: ['#36A2EB', '#FF6384']
                             }]
                         },
@@ -44,7 +44,8 @@
                             }
                         }
                     });
-                });
+                })
+                .catch(error => console.error('Error fetching chart data:', error)); // Handle fetch errors
         });
     </script>
 </body>

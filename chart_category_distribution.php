@@ -30,9 +30,9 @@
                     new Chart(ctx, {
                         type: 'pie',
                         data: {
-                            labels: data.labels, // Categories
+                            labels: data.labels, // Categories from database
                             datasets: [{
-                                data: data.values, // Quantities
+                                data: data.values, // Quantities from database
                                 backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
                             }]
                         },
@@ -44,7 +44,8 @@
                             }
                         }
                     });
-                });
+                })
+                .catch(error => console.error('Error fetching chart data:', error)); // Handle fetch errors
         });
     </script>
 </body>
