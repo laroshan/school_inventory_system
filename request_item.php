@@ -1,25 +1,46 @@
 <?php
 session_start();
 require_once 'includes/db_connect.php';
+require_once 'includes/email_helper.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $itemId = $_POST['item_id'];
     $quantity = $_POST['quantity'];
     $comment = $_POST['comment'];
     $borrowerId = $_SESSION['user_id'];
+    $borrowerName = $_SESSION['username']; // Fetch username from session
 
-    $sql = "INSERT INTO loan_records (item_id, borrower_id, quantity_borrowed, status, lending_date, comments) 
-            VALUES (:itemId, :borrowerId, :quantity, 'requested', CURDATE(), :comment)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        ':itemId' => $itemId,
-        ':borrowerId' => $borrowerId,
-        ':quantity' => $quantity,
-        ':comment' => $comment
-    ]);
+    try {
+        $sql = "INSERT INTO loan_records (item_id, borrower_id, quantity_borrowed, status, lending_date, comments) 
+                VALUES (:itemId, :borrowerId, :quantity, 'requested', CURDATE(), :comment)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            ':itemId' => $itemId,
+            ':borrowerId' => $borrowerId,
+            ':quantity' => $quantity,
+            ':comment' => $comment
+        ]);
 
-    header('Location: inventory.php');
-    exit();
+        // Fetch admin details
+        $adminQuery = "SELECT id, email FROM users WHERE role = 'admin'";
+        $adminStmt = $pdo->query($adminQuery);
+        $admins = $adminStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($admins as $admin) {
+            // Create in-app notification for admin
+            $message = "A new item request has been made by user '{$borrowerName}'.";
+            $pdo->prepare("INSERT INTO notifications (user_id, message, is_read) VALUES (:user_id, :message, 0)")
+                ->execute([':user_id' => $admin['id'], ':message' => $message]);
+
+            // Send email to admin
+            sendEmail($admin['email'], "New Item Request", $message);
+        }
+
+        header('Location: inventory.php');
+        exit();
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
 }
 
 $itemId = $_GET['id'];

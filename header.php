@@ -21,3 +21,48 @@
 
     <script src="assets/js/sidebar-toggle.js"></script>
 </head>
+
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="notificationDropdown"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-bell"></i> Notifications <span id="notificationCount" class="badge bg-danger">0</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" id="notificationList">
+            <!-- Notifications will be dynamically loaded here -->
+        </ul>
+    </div>
+</div>
+
+<script>
+    function fetchNotifications() {
+        fetch('fetch_notifications.php')
+            .then(response => response.json())
+            .then(data => {
+                const notificationList = document.getElementById('notificationList');
+                const notificationCount = document.getElementById('notificationCount');
+                notificationList.innerHTML = '';
+                notificationCount.textContent = data.unread_count;
+
+                if (data.notifications && data.notifications.length > 0) {
+                    data.notifications.forEach(notification => {
+                        const li = document.createElement('li');
+                        li.className = 'dropdown-item';
+                        li.textContent = notification.message;
+                        notificationList.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement('li');
+                    li.className = 'dropdown-item text-muted';
+                    li.textContent = 'No new notifications';
+                    notificationList.appendChild(li);
+                }
+            })
+            .catch(error => console.error('Error fetching notifications:', error));
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchNotifications(); // Initial fetch
+        setInterval(fetchNotifications, 10000); // Fetch notifications every 10 seconds
+    });
+</script>
