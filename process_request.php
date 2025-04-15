@@ -50,7 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ->execute([':user_id' => $borrower['borrower_id'], ':message' => $message]);
 
             // Send email to borrower
-            sendEmail($borrower['borrower_email'], "Request Approved", $message);
+            $subject = "Request Approved";
+            sendEmail($borrower['borrower_email'], $subject, $message);
 
         } elseif ($action === 'reject') {
             // Reject the request
@@ -78,7 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ->execute([':user_id' => $borrower['borrower_id'], ':message' => $message]);
 
             // Send email to borrower
-            sendEmail($borrower['borrower_email'], "Request Rejected", $message);
+            $subject = "Request Rejected";
+            sendEmail($borrower['borrower_email'], $subject, $message);
         }
 
         header('Location: lended_item_list.php');

@@ -33,7 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ->execute([':user_id' => $admin['id'], ':message' => $message]);
 
             // Send email to admin
-            sendEmail($admin['email'], "New Item Request", $message);
+            $subject = "New Item Request";
+            $message = "A new item request has been made by user '{$borrowerName}'.";
+            sendEmail($admin['email'], $subject, $message);
         }
 
         header('Location: inventory.php');

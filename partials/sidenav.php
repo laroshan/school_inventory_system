@@ -28,7 +28,6 @@ $role = $_SESSION['role'] ?? null;
             <div class="dropdown-center text-center">
                 <a class="topbar-link dropdown-toggle text-reset drop-arrow-none px-2" data-bs-toggle="dropdown"
                     type="button" aria-haspopup="false" aria-expanded="false">
-                    <img src="assets/images/avatar.jpg" width="46" class="rounded-circle" alt="user-image">
                     <span class="d-flex gap-1 sidenav-user-name my-2">
                         <span>
                             <span class="mb-0 fw-semibold lh-base fs-15"><?= $_SESSION['username'] ?></span>

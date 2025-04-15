@@ -1,3 +1,39 @@
 node_modules/
 package-lock.json
 scripts/*.log
+
+# Composer dependencies
+vendor/
+composer.lock
+
+# PHPUnit
+.phpunit.result.cache
+phpunit.xml
+phpunit.xml.dist
+
+# PHPCS
+.phpcs.xml
+phpcs.xml
+.phpcs-cache
+
+# PHPMailer test files
+test/
+test/message.txt
+test/testbootstrap.php
+test/PHPMailerTest.php
+
+# Build files
+build/
+
+# Sensitive files
+*.pem
+/.rnd
+
+# IDE and system files
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+*.tmp
+*.idea/
+*.vscode/

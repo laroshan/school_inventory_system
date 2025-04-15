@@ -22,10 +22,14 @@ try {
             ->execute([':user_id' => $item['borrower_id'], ':message' => $message]);
 
         // Send email to borrower
-        sendEmail($item['borrower_email'], "Item Due Reminder", $message);
+        $borrowerSubject = "Item Due Reminder";
+        $borrowerMessage = "The item '{$item['item_name']}' is nearing its due date ({$item['due_date']}).";
+        sendEmail($item['borrower_email'], $borrowerSubject, $borrowerMessage);
 
         // Send email to admin
-        sendEmail($item['admin_email'], "Item Due Reminder", $message);
+        $adminSubject = "Item Due Reminder";
+        $adminMessage = "The item '{$item['item_name']}' borrowed by {$item['borrower_name']} is nearing its due date ({$item['due_date']}).";
+        sendEmail($item['admin_email'], $adminSubject, $adminMessage);
     }
 } catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage());

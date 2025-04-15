@@ -61,8 +61,22 @@
             .catch(error => console.error('Error fetching notifications:', error));
     }
 
+    function markNotificationsAsRead() {
+        fetch('mark_notifications_read.php', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('notificationCount').textContent = '0';
+                }
+            })
+            .catch(error => console.error('Error marking notifications as read:', error));
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         fetchNotifications(); // Initial fetch
-        setInterval(fetchNotifications, 10000); // Fetch notifications every 10 seconds
+        setInterval(fetchNotifications, 5000); // Fetch notifications every 5 seconds
+
+        const notificationDropdown = document.getElementById('notificationDropdown');
+        notificationDropdown.addEventListener('click', markNotificationsAsRead);
     });
 </script>
