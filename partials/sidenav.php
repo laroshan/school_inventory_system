@@ -14,14 +14,6 @@ $role = $_SESSION['role'] ?? null;
         </span>
     </a>
 
-    <!-- Sidebar Toggle Buttons -->
-    <button class="sidenav-toggle-button">
-        <i class="fas fa-bars"></i>
-    </button>
-    <button class="button-close-fullsidebar sidenav-close">
-        <i class="fas fa-times"></i>
-    </button>
-
     <div data-simplebar>
         <!-- User -->
         <div class="sidenav-user">
@@ -88,9 +80,13 @@ $role = $_SESSION['role'] ?? null;
                             <li><a href="chart_monthly_borrowing.php">Monthly Borrowing Trends</a></li>
                             <li><a href="chart_top_borrowed.php">Top Borrowed Items</a></li>
                             <li><a href="chart_loan_vs_available.php">Loan vs. Available Inventory</a></li>
-                            <li><a href="chart_due_vs_overdue.php">Due vs. Overdue Loans</a></li>
                         </ul>
                     </div>
+                </li>
+                <li class="side-nav-item">
+                    <a href="generate_report.php" class="side-nav-link">
+                        <i class="fas fa-file-alt"></i> Generate Reports
+                    </a>
                 </li>
             <?php elseif ($role === 'teacher'): ?>
                 <li class="side-nav-item">

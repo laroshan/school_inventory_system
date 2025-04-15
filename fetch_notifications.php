@@ -13,7 +13,7 @@ if (!$userId) {
 }
 
 try {
-    $sql = "SELECT id, message, is_read FROM notifications WHERE user_id = :user_id ORDER BY created_at DESC";
+    $sql = "SELECT id, message, is_read FROM notifications WHERE user_id = :user_id AND is_read != 1 ORDER BY created_at DESC";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([':user_id' => $userId]);
     $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
