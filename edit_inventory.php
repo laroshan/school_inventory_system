@@ -25,9 +25,15 @@ if (isset($_POST['updateInventory'])) {
     $itemDescription = $_POST['itemDescription'];
     $quantity = $_POST['quantity'];
     $unitPrice = $_POST['unitPrice'];
-    $amount = $quantity * $unitPrice;
     $status = $_POST['status'];
     $inventoryDate = $_POST['inventoryDate'];
+
+    // If status is "Out of Stock", set quantity to zero
+    if ($status === 'Out of Stock') {
+        $quantity = 0;
+    }
+
+    $amount = $quantity * $unitPrice;
 
     $sql = "UPDATE inventory 
             SET item_name = :itemName, category = :category, item_description = :itemDescription, 
