@@ -55,7 +55,7 @@
                     "Comments", // Ensure comments column is included
                     {
                         name: "Actions",
-                        width: "400px", // Set default width for the Actions column
+                        width: "500px", // Increased width to provide more space
                         formatter: (cell, row) => {
                             const status = row.cells[8].data; // Adjusted index for "Status" column
                             const id = row.cells[0].data; // Get ID from the first column
@@ -65,7 +65,7 @@
                                     <form method="POST" action="process_request.php" class="d-flex gap-2" onsubmit="return validateApproveForm(this)">
                                         <input type="hidden" name="request_id" value="${id}">
                                         <input type="date" name="due_date" class="form-control form-control-sm" min="${new Date().toISOString().split('T')[0]}">
-                                        <textarea name="comment" class="form-control form-control-sm" placeholder="Optional comment"></textarea>
+                                        <textarea name="comment" class="form-control form-control-lg" placeholder="Optional comment"></textarea>
                                         <button type="submit" name="action" value="approve" class="btn btn-sm btn-success">Approve</button>
                                         <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger">Reject</button>
                                     </form>
