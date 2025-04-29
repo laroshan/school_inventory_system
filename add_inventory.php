@@ -45,6 +45,15 @@
                                                         <option value="Other">Other</option>
                                                     </select>
                                                 </div>
+
+                                                <div>
+                                                    <label for="isSerialized" class="form-label">Is Serialized?</label>
+                                                    <select class="form-select" id="isSerialized" name="isSerialized"
+                                                        required>
+                                                        <option value="0">No</option>
+                                                        <option value="1">Yes</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -57,9 +66,8 @@
                                                             <th scope="col" class="border-0" style="width: 70px;">#</th>
                                                             <th scope="col" class="border-0 text-start">Item Name</th>
                                                             <th scope="col" class="border-0">Description</th>
-                                                            <th scope="col" class="border-0" style="width: 140px">
-                                                                Quantity
-                                                            </th>
+                                                            <th scope="col" class="border-0" id="quantityOrSerialHeader"
+                                                                style="width: 140px;">Quantity</th>
                                                             <th scope="col" class="border-0" style="width: 140px;">Unit
                                                                 Price</th>
                                                             <th scope="col" class="border-0" style="width: 240px">Amount
@@ -115,10 +123,24 @@
         document.addEventListener('DOMContentLoaded', function () {
             const itemTableBody = document.getElementById('itemTableBody');
             const addItemBtn = document.getElementById('addItemBtn');
+            const isSerializedSelect = document.getElementById('isSerialized');
+            const quantityOrSerialHeader = document.getElementById('quantityOrSerialHeader');
             let itemCounter = 1;
+
+            // Update table header based on "Is Serialized" selection
+            isSerializedSelect.addEventListener('change', function () {
+                const isSerialized = this.value === '1';
+                quantityOrSerialHeader.textContent = isSerialized ? 'Serial Number' : 'Quantity';
+
+                // Clear existing rows when toggling between serialized and non-serialized
+                const rows = itemTableBody.querySelectorAll('tr');
+                rows.forEach(row => row.remove());
+                itemCounter = 1; // Reset counter
+            });
 
             // Function to add a new item row
             addItemBtn.addEventListener('click', function () {
+                const isSerialized = isSerializedSelect.value === '1';
                 const newRow = document.createElement('tr');
                 newRow.classList.add('item-row');
                 newRow.innerHTML = `
@@ -130,7 +152,12 @@
                         <input type="text" name="itemDescription[]" class="form-control" placeholder="Item Description">
                     </td>
                     <td>
-                        <input type="number" name="quantity[]" class="form-control quantity" placeholder="Quantity" required>
+                        ${isSerialized ? `
+                            <input type="text" name="serialNumber[]" class="form-control serial-number" placeholder="Serial Number" required>
+                            <input type="hidden" name="quantity[]" value="1">
+                        ` : `
+                            <input type="number" name="quantity[]" class="form-control quantity" placeholder="Quantity" required>
+                        `}
                     </td>
                     <td>
                         <input type="number" name="unitPrice[]" class="form-control unit-price" placeholder="Price" required>
@@ -152,11 +179,13 @@
                 const unitPriceInput = newRow.querySelector('.unit-price');
                 const amountInput = newRow.querySelector('.amount');
 
-                quantityInput.addEventListener('input', calculateAmount);
+                if (!isSerialized) {
+                    quantityInput.addEventListener('input', calculateAmount);
+                }
                 unitPriceInput.addEventListener('input', calculateAmount);
 
                 function calculateAmount() {
-                    const quantity = parseFloat(quantityInput.value) || 0;
+                    const quantity = parseFloat(quantityInput?.value || 1); // Default to 1 for serialized items
                     const unitPrice = parseFloat(unitPriceInput.value) || 0;
                     const amount = quantity * unitPrice;
                     amountInput.value = amount.toFixed(2); // Format to 2 decimal places
@@ -189,6 +218,15 @@
             }
             return true; // Allow form submission
         }
+
+        document.getElementById('isSerialized').addEventListener('change', function () {
+            const serialNumbersSection = document.getElementById('serialNumbersSection');
+            if (this.value === '1') {
+                serialNumbersSection.style.display = 'block';
+            } else {
+                serialNumbersSection.style.display = 'none';
+            }
+        });
     </script>
 </body>
 
@@ -202,15 +240,16 @@ require_once 'includes/db_connect.php';
 if (isset($_POST['saveInventory'])) {
     $inventoryDate = $_POST['inventoryDate'];
     $category = $_POST['category'];
+    $isSerialized = $_POST['isSerialized'];
     $itemNames = $_POST['itemName'];
     $itemDescriptions = $_POST['itemDescription'];
     $quantities = $_POST['quantity'];
     $unitPrices = $_POST['unitPrice'];
     $amounts = $_POST['amount'];
+    $serialNumbers = isset($_POST['serialNumber']) ? $_POST['serialNumber'] : [];
 
-    // Insert into inventory table
-    $sql = "INSERT INTO inventory (item_name, category, item_description, quantity, unit_price, amount, status, inventory_date) 
-            VALUES (:itemName, :category, :itemDescription, :quantity, :unitPrice, :amount, :status, :inventoryDate)";
+    $sql = "INSERT INTO inventory (item_name, category, item_description, quantity, unit_price, amount, status, inventory_date, is_serialized) 
+            VALUES (:itemName, :category, :itemDescription, :quantity, :unitPrice, :amount, :status, :inventoryDate, :isSerialized)";
     $stmt = $pdo->prepare($sql);
 
     for ($i = 0; $i < count($itemNames); $i++) {
@@ -223,8 +262,23 @@ if (isset($_POST['saveInventory'])) {
             ':unitPrice' => $unitPrices[$i],
             ':amount' => $amounts[$i],
             ':status' => $status,
-            ':inventoryDate' => $inventoryDate
+            ':inventoryDate' => $inventoryDate,
+            ':isSerialized' => $isSerialized
         ]);
+
+        $inventoryId = $pdo->lastInsertId();
+
+        if ($isSerialized == '1' && !empty($serialNumbers)) {
+            $serialInsertSql = "INSERT INTO inventory_items (inventory_id, serial_number) VALUES (:inventoryId, :serialNumber)";
+            $serialStmt = $pdo->prepare($serialInsertSql);
+
+            foreach ($serialNumbers as $serialNumber) {
+                $serialStmt->execute([
+                    ':inventoryId' => $inventoryId,
+                    ':serialNumber' => trim($serialNumber)
+                ]);
+            }
+        }
     }
     echo "<script>alert('Inventory saved successfully!');</script>";
 }
