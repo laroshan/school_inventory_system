@@ -12,6 +12,18 @@ if (!empty($itemIds)) {
     $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+// Fetch serialized item details
+$serializedItems = [];
+if (!empty($itemIds)) {
+    $serializedQuery = "SELECT ii.id, ii.serial_number, ii.inventory_id 
+                        FROM inventory_items ii 
+                        WHERE ii.inventory_id IN (" . implode(',', array_map('intval', $itemIds)) . ") 
+                        AND ii.status = 'available'";
+    $stmt = $pdo->prepare($serializedQuery);
+    $stmt->execute();
+    $serializedItems = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
+}
+
 // Fetch borrower list
 $borrowerQuery = "SELECT id, username FROM users";
 $stmt = $pdo->prepare($borrowerQuery);
@@ -80,10 +92,24 @@ $borrowers = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                             value="<?= htmlspecialchars($item['id']) ?>">
                                                     </td>
                                                     <td>
-                                                        <input type="number"
-                                                            name="quantity[<?= htmlspecialchars($item['id']) ?>]"
-                                                            class="form-control" min="1"
-                                                            max="<?= htmlspecialchars($item['quantity']) ?>" required>
+                                                        <?php if ($item['is_serialized']) { ?>
+                                                            <select name="serial_numbers[<?= htmlspecialchars($item['id']) ?>]"
+                                                                class="form-control" required>
+                                                                <option value="">Select Serial Number</option>
+                                                                <?php if (isset($serializedItems[$item['id']])) {
+                                                                    foreach ($serializedItems[$item['id']] as $serial) { ?>
+                                                                        <option value="<?= htmlspecialchars($serial['id']) ?>">
+                                                                            <?= htmlspecialchars($serial['serial_number']) ?>
+                                                                        </option>
+                                                                    <?php }
+                                                                } ?>
+                                                            </select>
+                                                        <?php } else { ?>
+                                                            <input type="number"
+                                                                name="quantity[<?= htmlspecialchars($item['id']) ?>]"
+                                                                class="form-control" min="1"
+                                                                max="<?= htmlspecialchars($item['quantity']) ?>" required>
+                                                        <?php } ?>
                                                     </td>
                                                 </tr>
                                             <?php } ?>

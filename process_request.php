@@ -16,24 +16,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             }
 
-            // Approve the request
-            $sql = "UPDATE loan_records 
-                    SET status = 'borrowed', due_date = :dueDate, comments = :comment 
-                    WHERE id = :requestId";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([
-                ':dueDate' => $dueDate,
-                ':comment' => $comment,
-                ':requestId' => $requestId
-            ]);
-
-            // Update inventory quantity
-            $updateInventory = "UPDATE inventory i 
-                                JOIN loan_records lr ON i.id = lr.item_id 
-                                SET i.quantity = i.quantity - lr.quantity_borrowed 
-                                WHERE lr.id = :requestId";
-            $stmt = $pdo->prepare($updateInventory);
+            // Check if the item is serialized
+            $serializedCheckQuery = "SELECT i.is_serialized 
+                                     FROM loan_records lr 
+                                     JOIN inventory i ON lr.item_id = i.id 
+                                     WHERE lr.id = :requestId";
+            $stmt = $pdo->prepare($serializedCheckQuery);
             $stmt->execute([':requestId' => $requestId]);
+            $isSerialized = $stmt->fetchColumn();
+
+            if ($isSerialized) {
+                // Handle serialized items
+                $serialNumberId = $_POST['serial_number'] ?? null;
+                if (empty($serialNumberId)) {
+                    echo "Error: Serial number is required for serialized items.";
+                    exit();
+                }
+
+                // Update loan record with the selected serial number
+                $sql = "UPDATE loan_records 
+                        SET status = 'borrowed', due_date = :dueDate, comments = :comment, item_instance_id = :serialNumberId 
+                        WHERE id = :requestId";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([
+                    ':dueDate' => $dueDate,
+                    ':comment' => $comment,
+                    ':serialNumberId' => $serialNumberId,
+                    ':requestId' => $requestId
+                ]);
+
+                // Update the status of the selected serial number
+                $updateSerialStatus = "UPDATE inventory_items 
+                                       SET status = 'loaned' 
+                                       WHERE id = :serialNumberId";
+                $stmt = $pdo->prepare($updateSerialStatus);
+                $stmt->execute([':serialNumberId' => $serialNumberId]);
+            } else {
+                // Handle non-serialized items
+                $sql = "UPDATE loan_records 
+                        SET status = 'borrowed', due_date = :dueDate, comments = :comment 
+                        WHERE id = :requestId";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([
+                    ':dueDate' => $dueDate,
+                    ':comment' => $comment,
+                    ':requestId' => $requestId
+                ]);
+
+                // Update inventory quantity
+                $updateInventory = "UPDATE inventory i 
+                                    JOIN loan_records lr ON i.id = lr.item_id 
+                                    SET i.quantity = i.quantity - lr.quantity_borrowed 
+                                    WHERE lr.id = :requestId";
+                $stmt = $pdo->prepare($updateInventory);
+                $stmt->execute([':requestId' => $requestId]);
+            }
 
             // Fetch borrower details
             $borrowerQuery = "SELECT borrower_id, item_id, u.username AS borrower_name, u.email AS borrower_email 

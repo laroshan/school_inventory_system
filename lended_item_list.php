@@ -59,17 +59,37 @@
                         formatter: (cell, row) => {
                             const status = row.cells[8].data; // Adjusted index for "Status" column
                             const id = row.cells[0].data; // Get ID from the first column
+                            const isSerialized = row.cells[10].data; // is_serialized column
+                            const serialNumbers = row.cells[11].data; // Available serial numbers column
 
                             if (status === 'requested') {
-                                return gridjs.html(`
-                                    <form method="POST" action="process_request.php" class="d-flex gap-2" onsubmit="return validateApproveForm(this)">
-                                        <input type="hidden" name="request_id" value="${id}">
-                                        <input type="date" name="due_date" class="form-control form-control-sm" min="${new Date().toISOString().split('T')[0]}">
-                                        <textarea name="comment" class="form-control form-control-lg" placeholder="Optional comment"></textarea>
-                                        <button type="submit" name="action" value="approve" class="btn btn-sm btn-success">Approve</button>
-                                        <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger">Reject</button>
-                                    </form>
-                                `);
+                                if (isSerialized) {
+                                    return gridjs.html(`
+                                        <form method="POST" action="process_request.php" class="d-flex gap-2" onsubmit="return validateApproveForm(this)">
+                                            <input type="hidden" name="request_id" value="${id}">
+                                            <select name="serial_number" class="form-control form-control-sm" required>
+                                                <option value="">Select Serial Number</option>
+                                                ${serialNumbers.map(serial => `
+                                                    <option value="${serial.id}">${serial.serial_number}</option>
+                                                `).join('')}
+                                            </select>
+                                            <input type="date" name="due_date" class="form-control form-control-sm" min="${new Date().toISOString().split('T')[0]}">
+                                            <textarea name="comment" class="form-control form-control-lg" placeholder="Optional comment"></textarea>
+                                            <button type="submit" name="action" value="approve" class="btn btn-sm btn-success">Approve</button>
+                                            <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger">Reject</button>
+                                        </form>
+                                    `);
+                                } else {
+                                    return gridjs.html(`
+                                        <form method="POST" action="process_request.php" class="d-flex gap-2" onsubmit="return validateApproveForm(this)">
+                                            <input type="hidden" name="request_id" value="${id}">
+                                            <input type="date" name="due_date" class="form-control form-control-sm" min="${new Date().toISOString().split('T')[0]}">
+                                            <textarea name="comment" class="form-control form-control-lg" placeholder="Optional comment"></textarea>
+                                            <button type="submit" name="action" value="approve" class="btn btn-sm btn-success">Approve</button>
+                                            <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger">Reject</button>
+                                        </form>
+                                    `);
+                                }
                             } else {
                                 return gridjs.html(`
                                     <form method="POST" action="update_record.php" class="d-flex gap-2">
@@ -110,9 +130,11 @@
                         item.quantity_borrowed,
                         item.lending_date,
                         item.due_date,
-                        item.returned_date, // Map returned date to the new column
+                        item.returned_date,
                         item.status,
-                        item.comments // Ensure comments are mapped correctly
+                        item.comments,
+                        item.is_serialized, // Add is_serialized flag
+                        item.available_serial_numbers ? JSON.parse(item.available_serial_numbers) : [] // Parse available serial numbers
                     ])
                 },
                 search: { enabled: true }, // Enable search
