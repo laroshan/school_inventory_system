@@ -50,17 +50,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // Reduce inventory quantity by the number of serial numbers lent
                 $updateInventory = "UPDATE inventory 
-                                    SET quantity = quantity - :quantity 
+                                    SET quantity = quantity - 1 
                                     WHERE id = :itemId";
                 $stmt = $pdo->prepare($updateInventory);
                 $stmt->execute([
-                    ':quantity' => count($serialNumbers),
                     ':itemId' => $itemId
                 ]);
             } else {
                 // Handle non-serialized items
                 // Check if quantity is lendable
-                $availableQuantity = $pdo->query("SELECT quantity FROM inventory WHERE id = $itemId")->fetchColumn();
+                $availableQuantityQuery = "SELECT quantity FROM inventory WHERE id = :itemId";
+                $stmt = $pdo->prepare($availableQuantityQuery);
+                $stmt->execute([':itemId' => $itemId]);
+                $availableQuantity = $stmt->fetchColumn();
+
                 if ($quantity > $availableQuantity) {
                     throw new Exception("Quantity for item ID $itemId exceeds available stock.");
                 }
