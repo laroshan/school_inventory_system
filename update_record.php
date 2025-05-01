@@ -81,18 +81,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $itemId = $loanRecord['item_id'];
+            $itemInstanceId = $loanRecord['item_instance_id'];
             $quantityBorrowed = $loanRecord['quantity_borrowed'];
             $isSerialized = $loanRecord['is_serialized'];
 
+            echo '<script>console.log("Approving item ID: ' . $itemId . '");</script>';
+
             if ($isSerialized) {
                 // Reduce inventory quantity by 1 for serialized items
+                if (!$itemInstanceId) {
+                    throw new Exception("Serialized item instance ID is missing.");
+                }
+
+
+                // Update the inventory table to reduce the quantity
                 $updateInventory = "UPDATE inventory 
                                     SET quantity = quantity - 1 
-                                    WHERE id = :itemId";
+                                    WHERE id = 31";
                 $stmt = $pdo->prepare($updateInventory);
                 $stmt->execute([':itemId' => $itemId]);
+
+                // Update the inventory_items table to mark the serial number as loaned
+                $updateSerialStatus = "UPDATE inventory_items 
+                                       SET status = 'loaned' 
+                                       WHERE id = :itemInstanceId";
+                $stmt = $pdo->prepare($updateSerialStatus);
+                $stmt->execute([':itemInstanceId' => $itemInstanceId]);
+
+                error_log("Marked serial number ID: $itemInstanceId as loaned");
             } else {
                 // Reduce inventory quantity by the quantity borrowed for non-serialized items
+                error_log("Reducing inventory quantity for non-serialized item ID: $itemId by $quantityBorrowed");
+
                 $updateInventory = "UPDATE inventory 
                                     SET quantity = quantity - :quantityBorrowed 
                                     WHERE id = :itemId";
@@ -110,7 +130,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare($updateLoanRecord);
             $stmt->execute([':recordId' => $recordId]);
 
-            echo "<script>alert('Item approved successfully.'); window.location.href = 'lended_item_list.php';</script>";
+            error_log("Approved loan record ID: $recordId");
+            echo '<script>alert("Item approved successfully."); window.location.href = "lended_item_list.php";</script>';
         } else {
             $dueDate = $_POST['due_date'];
             $comment = $_POST['comment'] ?? '';
