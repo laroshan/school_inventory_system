@@ -248,38 +248,71 @@ if (isset($_POST['saveInventory'])) {
     $amounts = $_POST['amount'];
     $serialNumbers = isset($_POST['serialNumber']) ? $_POST['serialNumber'] : [];
 
-    $sql = "INSERT INTO inventory (item_name, category, item_description, quantity, unit_price, amount, status, inventory_date, is_serialized) 
-            VALUES (:itemName, :category, :itemDescription, :quantity, :unitPrice, :amount, :status, :inventoryDate, :isSerialized)";
-    $stmt = $pdo->prepare($sql);
-
-    for ($i = 0; $i < count($itemNames); $i++) {
-        $status = ($quantities[$i] > 0) ? 'In Stock' : 'Out of Stock';
+    foreach ($itemNames as $index => $itemName) {
+        // Check if the item already exists in the inventory
+        $existingItemQuery = "SELECT id, quantity FROM inventory WHERE item_name = :itemName AND category = :category AND is_serialized = :isSerialized";
+        $stmt = $pdo->prepare($existingItemQuery);
         $stmt->execute([
-            ':itemName' => $itemNames[$i],
+            ':itemName' => $itemName,
             ':category' => $category,
-            ':itemDescription' => $itemDescriptions[$i],
-            ':quantity' => $quantities[$i],
-            ':unitPrice' => $unitPrices[$i],
-            ':amount' => $amounts[$i],
-            ':status' => $status,
-            ':inventoryDate' => $inventoryDate,
             ':isSerialized' => $isSerialized
         ]);
+        $existingItem = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $inventoryId = $pdo->lastInsertId();
+        if ($existingItem) {
+            // Update existing inventory record
+            $newQuantity = $existingItem['quantity'] + $quantities[$index];
+            $updateInventoryQuery = "UPDATE inventory SET quantity = :quantity, inventory_date = :inventoryDate WHERE id = :inventoryId";
+            $stmt = $pdo->prepare($updateInventoryQuery);
+            $stmt->execute([
+                ':quantity' => $newQuantity,
+                ':inventoryDate' => $inventoryDate,
+                ':inventoryId' => $existingItem['id']
+            ]);
 
+            $inventoryId = $existingItem['id'];
+        } else {
+            // Insert new inventory record
+            $status = ($quantities[$index] > 0) ? 'In Stock' : 'Out of Stock';
+            $insertInventoryQuery = "INSERT INTO inventory (item_name, category, item_description, quantity, unit_price, amount, status, inventory_date, is_serialized) 
+                                     VALUES (:itemName, :category, :itemDescription, :quantity, :unitPrice, :amount, :status, :inventoryDate, :isSerialized)";
+            $stmt = $pdo->prepare($insertInventoryQuery);
+            $stmt->execute([
+                ':itemName' => $itemName,
+                ':category' => $category,
+                ':itemDescription' => $itemDescriptions[$index],
+                ':quantity' => $quantities[$index],
+                ':unitPrice' => $unitPrices[$index],
+                ':amount' => $amounts[$index],
+                ':status' => $status,
+                ':inventoryDate' => $inventoryDate,
+                ':isSerialized' => $isSerialized
+            ]);
+
+            $inventoryId = $pdo->lastInsertId();
+        }
+
+        // Handle serialized items
         if ($isSerialized == '1' && !empty($serialNumbers)) {
-            $serialInsertSql = "INSERT INTO inventory_items (inventory_id, serial_number) VALUES (:inventoryId, :serialNumber)";
-            $serialStmt = $pdo->prepare($serialInsertSql);
+            $serialInsertQuery = "INSERT INTO inventory_items (inventory_id, serial_number) VALUES (:inventoryId, :serialNumber)";
+            $serialStmt = $pdo->prepare($serialInsertQuery);
 
             foreach ($serialNumbers as $serialNumber) {
-                $serialStmt->execute([
-                    ':inventoryId' => $inventoryId,
-                    ':serialNumber' => trim($serialNumber)
-                ]);
+                // Check if the serial number already exists
+                $existingSerialQuery = "SELECT id FROM inventory_items WHERE serial_number = :serialNumber";
+                $serialCheckStmt = $pdo->prepare($existingSerialQuery);
+                $serialCheckStmt->execute([':serialNumber' => trim($serialNumber)]);
+                if (!$serialCheckStmt->fetch()) {
+                    // Insert new serial number
+                    $serialStmt->execute([
+                        ':inventoryId' => $inventoryId,
+                        ':serialNumber' => trim($serialNumber)
+                    ]);
+                }
             }
         }
     }
-    echo "<script>alert('Inventory saved successfully!');</script>";
+
+    echo "<script>alert('Inventory updated successfully!');</script>";
 }
 ?>
