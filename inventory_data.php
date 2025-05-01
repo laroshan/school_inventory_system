@@ -7,7 +7,7 @@ header('Content-Type: application/json');
 
 try {
     // Fetch inventory data
-    $sql = "SELECT id, item_name, category, item_description, quantity, unit_price, amount, status, inventory_date 
+    $sql = "SELECT id, item_name, category, item_description, quantity, unit_price, amount, status, inventory_date, is_serialized 
             FROM inventory";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();

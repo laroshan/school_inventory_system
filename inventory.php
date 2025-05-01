@@ -53,6 +53,10 @@
                     "Status",
                     "Inventory Date",
                     {
+                        name: "Serialized",
+                        formatter: (cell, row) => row.cells[9].data === 1 ? "Serialized" : "Non-Serialized" // Check is_serialized value
+                    },
+                    {
                         name: "Actions",
                         formatter: (cell, row) => {
                             const id = row.cells[0].data; // Get ID from the first column
@@ -98,7 +102,8 @@
                         `$${item.unit_price}`,
                         `$${item.amount}`,
                         item.status,
-                        item.inventory_date
+                        item.inventory_date,
+                        item.is_serialized // Add is_serialized field
                     ])
                 },
                 search: { enabled: true }, // 🔍 Enable search

@@ -47,6 +47,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $stmt = $pdo->prepare($updateSerialStatus);
                     $stmt->execute([':serialNumberId' => $serialNumberId]);
                 }
+
+                // Reduce inventory quantity by the number of serial numbers lent
+                $updateInventory = "UPDATE inventory 
+                                    SET quantity = quantity - :quantity 
+                                    WHERE id = :itemId";
+                $stmt = $pdo->prepare($updateInventory);
+                $stmt->execute([
+                    ':quantity' => count($serialNumbers),
+                    ':itemId' => $itemId
+                ]);
             } else {
                 // Handle non-serialized items
                 // Check if quantity is lendable
@@ -67,9 +77,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     ':dueDate' => $dueDate
                 ]);
 
-                // Update inventory quantity
-                $updateQuery = "UPDATE inventory SET quantity = quantity - :quantity WHERE id = :itemId";
-                $stmt = $pdo->prepare($updateQuery);
+                // Reduce inventory quantity by the quantity lent
+                $updateInventory = "UPDATE inventory 
+                                    SET quantity = quantity - :quantity 
+                                    WHERE id = :itemId";
+                $stmt = $pdo->prepare($updateInventory);
                 $stmt->execute([
                     ':quantity' => $quantity,
                     ':itemId' => $itemId

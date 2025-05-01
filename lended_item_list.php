@@ -50,9 +50,9 @@
                     "Quantity Borrowed",
                     "Lending Date",
                     "Due Date",
-                    "Returned Date", // New column for returned date
+                    "Returned Date",
                     "Status",
-                    "Comments", // Ensure comments column is included
+                    "Comments",
                     {
                         name: "Actions",
                         width: "500px", // Increased width to provide more space
@@ -134,7 +134,7 @@
                         item.status,
                         item.comments,
                         item.is_serialized, // Add is_serialized flag
-                        item.available_serial_numbers ? JSON.parse(item.available_serial_numbers) : [] // Parse available serial numbers
+                        item.serial_numbers ? JSON.parse(item.serial_numbers) : [] // Parse available serial numbers
                     ])
                 },
                 search: { enabled: true }, // Enable search

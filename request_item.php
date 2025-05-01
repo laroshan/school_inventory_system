@@ -45,10 +45,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$itemId = $_GET['id'];
-$stmt = $pdo->prepare("SELECT * FROM inventory WHERE id = ?");
-$stmt->execute([$itemId]);
+$itemId = $_GET['id'] ?? null;
+if (!$itemId) {
+    echo "<script>alert('Invalid item ID.'); window.location.href = 'inventory.php';</script>";
+    exit();
+}
+
+$query = "SELECT * FROM inventory WHERE id = :itemId";
+$stmt = $pdo->prepare($query);
+$stmt->execute([':itemId' => $itemId]);
 $item = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$item) {
+    echo "<script>alert('Item not found.'); window.location.href = 'inventory.php';</script>";
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -61,37 +72,69 @@ $item = $stmt->fetch(PDO::FETCH_ASSOC);
         <div class="page-content">
             <div class="container">
                 <div class="card">
-                    <div class="card-header">
-                        <h3>Request Item</h3>
-                    </div>
-                    <div class="card-body">
-                        <form method="POST">
-                            <input type="hidden" name="item_id" value="<?= $item['id'] ?>">
-                            <div class="mb-3">
-                                <label>Item Name</label>
-                                <input type="text" class="form-control" value="<?= $item['item_name'] ?>" readonly>
+                    <form method="POST" onsubmit="return validateForm()">
+                        <div class="card-body">
+                            <h3 class="card-title">Request Item</h3>
+                            <br />
+
+                            <input type="hidden" name="item_id" value="<?= htmlspecialchars($item['id']) ?>">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label">Item Name:</label>
+                                    <input type="text" class="form-control"
+                                        value="<?= htmlspecialchars($item['item_name']) ?>" disabled>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Category:</label>
+                                    <input type="text" class="form-control"
+                                        value="<?= htmlspecialchars($item['category']) ?>" disabled>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label>Available Quantity</label>
-                                <input type="number" class="form-control" value="<?= $item['quantity'] ?>" readonly>
+
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Quantity:</label>
+                                    <?php if ($item['is_serialized']) { ?>
+                                        <input type="number" name="quantity" class="form-control" value="1" readonly>
+                                        <small class="text-muted">Note: Only 1 quantity can be requested per request for
+                                            serialized items.</small>
+                                    <?php } else { ?>
+                                        <input type="number" name="quantity" class="form-control" min="1"
+                                            max="<?= htmlspecialchars($item['quantity']) ?>" required>
+                                    <?php } ?>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label>Request Quantity</label>
-                                <input type="number" name="quantity" class="form-control" required min="1"
-                                    max="<?= $item['quantity'] ?>">
+
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Comments (Optional):</label>
+                                    <textarea name="comment" class="form-control" rows="3"></textarea>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label>Comment (Optional)</label>
-                                <textarea name="comment" class="form-control"></textarea>
+
+                            <div class="mt-4 text-center">
+                                <button type="submit" class="btn btn-success">Submit Request</button>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit Request</button>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
     <?php include 'partials/footer.php'; ?>
+
+    <script>
+        function validateForm() {
+            const quantityInput = document.querySelector('input[name="quantity"]');
+            if (quantityInput && quantityInput.value <= 0) {
+                alert('Quantity must be greater than 0.');
+                return false;
+            }
+            return true;
+        }
+    </script>
 </body>
 
 </html>
