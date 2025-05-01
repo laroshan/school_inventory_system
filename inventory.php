@@ -37,11 +37,56 @@
     <script src="assets/vendor/gridjs/gridjs.umd.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Clear the container before rendering
             const container = document.getElementById("table-gridjs");
             container.innerHTML = ""; // Ensure the container is empty
 
-            new gridjs.Grid({
+            // Create a standalone category filter dropdown
+            const categoryFilterContainer = document.createElement('div');
+            categoryFilterContainer.className = 'mb-3'; // Add margin for spacing
+            categoryFilterContainer.innerHTML = `
+                <label for="categoryFilter" class="form-label">Filter by Category</label>
+                <select id="categoryFilter" class="form-select form-select-sm">
+                    <option value="">All Categories</option>
+                </select>
+            `;
+            container.parentElement.insertBefore(categoryFilterContainer, container); // Insert above the table
+
+            const categoryFilter = document.getElementById('categoryFilter');
+
+            // Fetch categories and populate the dropdown
+            fetch('categories_data.php')
+                .then(response => response.json())
+                .then(categories => {
+                    categoryFilter.innerHTML += categories
+                        .map(category => `<option value="${category}">${category}</option>`)
+                        .join('');
+                });
+
+            // Add event listener to filter by category
+            categoryFilter.addEventListener('change', function () {
+                const selectedCategory = this.value;
+                grid.updateConfig({
+                    server: {
+                        url: 'inventory_data.php',
+                        then: data => data
+                            .filter(item => !selectedCategory || item.category === selectedCategory)
+                            .map(item => [
+                                item.id,
+                                item.item_name,
+                                item.category,
+                                item.item_description,
+                                item.quantity,
+                                `$${item.unit_price}`,
+                                `$${item.amount}`,
+                                item.status,
+                                item.inventory_date,
+                                item.is_serialized // Add is_serialized field
+                            ])
+                    }
+                }).forceRender();
+            });
+
+            const grid = new gridjs.Grid({
                 columns: [
                     "ID",
                     "Item Name",
@@ -106,7 +151,7 @@
                         item.is_serialized // Add is_serialized field
                     ])
                 },
-                search: { enabled: true }, // 🔍 Enable search
+                search: { enabled: true }, // Enable search
                 pagination: { limit: 10 }, // Enable pagination with 10 rows per page
                 sort: true, // Enable sorting
                 resizable: true,
@@ -127,13 +172,13 @@
                     search: `
                         <div class="d-flex align-items-center">
                             <input type="text" class="gridjs-search-input form-control" placeholder="Search inventory...">
-                            <button type="button" class="btn btn-link p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="right" title="You can perform a global search for any item, category, or description.">
-                                <i class="fas fa-info-circle text-primary"></i>
-                            </button>
                         </div>
                     `
                 }
-            }).render(container); // Render the table in the cleared container
+            });
+
+            // Render the grid
+            grid.render(container);
         });
     </script>
 </body>
