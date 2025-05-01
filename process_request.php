@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         if ($action === 'approve') {
+            // Validate due date
             if (empty($dueDate)) {
                 echo "Error: Due date is required to approve the request.";
                 exit();
@@ -26,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $isSerialized = $stmt->fetchColumn();
 
             if ($isSerialized) {
-                // Handle serialized items
+                // Validate serial number for serialized items
                 $serialNumberId = $_POST['serial_number'] ?? null;
                 if (empty($serialNumberId)) {
                     echo "Error: Serial number is required for serialized items.";
@@ -51,6 +52,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                        WHERE id = :serialNumberId";
                 $stmt = $pdo->prepare($updateSerialStatus);
                 $stmt->execute([':serialNumberId' => $serialNumberId]);
+
+                // Update the inventory table to reduce the quantity
+                $updateInventory = "UPDATE inventory 
+                                    SET quantity = quantity - 1 
+                                    WHERE id = (SELECT item_id FROM loan_records WHERE id = :requestId)";
+                $stmt = $pdo->prepare($updateInventory);
+                $stmt->execute([':requestId' => $requestId]);
+
+                error_log("Reduced inventory quantity for serialized item associated with request ID: $requestId");
             } else {
                 // Handle non-serialized items
                 $sql = "UPDATE loan_records 
@@ -100,6 +110,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':comment' => $comment,
                 ':requestId' => $requestId
             ]);
+
+            // No validation for due date or serial number is required for rejection
 
             // Fetch borrower details
             $borrowerQuery = "SELECT borrower_id, item_id, u.username AS borrower_name, u.email AS borrower_email 

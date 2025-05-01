@@ -96,17 +96,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // Update the inventory table to reduce the quantity
                 $updateInventory = "UPDATE inventory 
-                                    SET quantity = quantity - 1 
-                                    WHERE id = 31";
+                                    SET quantity = quantity - 1
+                                    WHERE id = :itemId";
                 $stmt = $pdo->prepare($updateInventory);
                 $stmt->execute([':itemId' => $itemId]);
 
-                // Update the inventory_items table to mark the serial number as loaned
-                $updateSerialStatus = "UPDATE inventory_items 
-                                       SET status = 'loaned' 
-                                       WHERE id = :itemInstanceId";
-                $stmt = $pdo->prepare($updateSerialStatus);
-                $stmt->execute([':itemInstanceId' => $itemInstanceId]);
+                // // Update the inventory_items table to mark the serial number as loaned
+                // $updateSerialStatus = "UPDATE inventory_items 
+                //                        SET status = 'loaned' 
+                //                        WHERE id = :itemInstanceId";
+                // $stmt = $pdo->prepare($updateSerialStatus);
+                // $stmt->execute([':itemInstanceId' => $itemInstanceId]);
 
                 error_log("Marked serial number ID: $itemInstanceId as loaned");
             } else {

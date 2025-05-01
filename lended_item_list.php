@@ -67,7 +67,7 @@
                                     return gridjs.html(`
                                         <form method="POST" action="process_request.php" class="d-flex gap-2" onsubmit="return validateApproveForm(this)">
                                             <input type="hidden" name="request_id" value="${id}">
-                                            <select name="serial_number" class="form-control form-control-sm" required>
+                                            <select name="serial_number" class="form-control form-control-sm">
                                                 <option value="">Select Serial Number</option>
                                                 ${serialNumbers.map(serial => `
                                                     <option value="${serial.id}">${serial.serial_number}</option>
@@ -169,19 +169,45 @@
             });
         });
 
-        // Client-side validation for the approve form
+        // Client-side validation for the form
         function validateApproveForm(form) {
-            const dueDate = form.querySelector('input[name="due_date"]').value;
-            if (!dueDate) {
-                alert("Please select a due date before approving the request.");
-                return false; // Prevent form submission
+            const approveButton = form.querySelector('button[type="submit"][name="action"][value="approve"]');
+            const rejectButton = form.querySelector('button[type="submit"][name="action"][value="reject"]');
+
+            // Check if the reject button was clicked
+            if (rejectButton && rejectButton === document.activeElement) {
+                // Remove the required attribute from the serial number field
+                const serialNumberField = form.querySelector('select[name="serial_number"]');
+                if (serialNumberField) {
+                    serialNumberField.removeAttribute('required');
+                }
+                return true; // Allow form submission
             }
-            const today = new Date().toISOString().split('T')[0];
-            if (dueDate < today) {
-                alert("Due date cannot be in the past.");
-                return false; // Prevent form submission
+
+            // Check if the approve button was clicked
+            if (approveButton && approveButton === document.activeElement) {
+                // Validate due date
+                const dueDate = form.querySelector('input[name="due_date"]').value;
+                if (!dueDate) {
+                    alert("Please select a due date before approving the request.");
+                    return false; // Prevent form submission
+                }
+
+                const today = new Date().toISOString().split('T')[0];
+                if (dueDate < today) {
+                    alert("Due date cannot be in the past.");
+                    return false; // Prevent form submission
+                }
+
+                // Validate serial number for serialized items
+                const serialNumberField = form.querySelector('select[name="serial_number"]');
+                if (serialNumberField && !serialNumberField.value) {
+                    alert("Please select a serial number for serialized items.");
+                    return false; // Prevent form submission
+                }
             }
-            return true; // Allow form submission
+
+            return true; // Default to allowing form submission
         }
     </script>
 </body>
