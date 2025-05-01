@@ -293,11 +293,12 @@ if (isset($_POST['saveInventory'])) {
         }
 
         // Handle serialized items
-        if ($isSerialized == '1' && !empty($serialNumbers)) {
+        if ($isSerialized == '1' && !empty($serialNumbers[$index])) {
             $serialInsertQuery = "INSERT INTO inventory_items (inventory_id, serial_number) VALUES (:inventoryId, :serialNumber)";
             $serialStmt = $pdo->prepare($serialInsertQuery);
 
-            foreach ($serialNumbers as $serialNumber) {
+            $serialNumbersForItem = explode(',', $serialNumbers[$index]); // Assume serial numbers are comma-separated
+            foreach ($serialNumbersForItem as $serialNumber) {
                 // Check if the serial number already exists
                 $existingSerialQuery = "SELECT id FROM inventory_items WHERE serial_number = :serialNumber";
                 $serialCheckStmt = $pdo->prepare($existingSerialQuery);

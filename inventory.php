@@ -117,6 +117,16 @@
                         'of': 'of',
                         'results': 'results'
                     }
+                },
+                html: {
+                    search: `
+                        <div class="d-flex align-items-center">
+                            <input type="text" class="gridjs-search-input form-control" placeholder="Search inventory...">
+                            <button type="button" class="btn btn-link p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="right" title="You can perform a global search for any item, category, or description.">
+                                <i class="fas fa-info-circle text-primary"></i>
+                            </button>
+                        </div>
+                    `
                 }
             }).render(container); // Render the table in the cleared container
         });

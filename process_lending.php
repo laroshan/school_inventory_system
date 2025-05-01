@@ -6,13 +6,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $lendingDate = $_POST['lending_date'];
     $dueDate = $_POST['due_date'];
     $itemIds = $_POST['item_ids'];
-    $quantities = $_POST['quantity'];
+    $quantities = $_POST['quantity'] ?? []; // Ensure quantity is defined
 
     try {
         $pdo->beginTransaction();
 
         foreach ($itemIds as $itemId) {
-            $quantity = $quantities[$itemId];
+            $quantity = $quantities[$itemId] ?? 0; // Default to 0 if not set
 
             // Check if the item is serialized
             $isSerializedQuery = "SELECT is_serialized FROM inventory WHERE id = :itemId";
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($isSerialized) {
                 // Handle serialized items
                 $serialNumbers = $_POST['serial_numbers'][$itemId] ?? [];
-                if (count($serialNumbers) !== $quantity) {
+                if (count($serialNumbers) !== (int) $quantity) {
                     throw new Exception("The number of selected serial numbers does not match the quantity for item ID $itemId.");
                 }
 

@@ -15,13 +15,16 @@ if (!empty($itemIds)) {
 // Fetch serialized item details
 $serializedItems = [];
 if (!empty($itemIds)) {
-    $serializedQuery = "SELECT ii.id, ii.serial_number, ii.inventory_id 
+    $serializedQuery = "SELECT ii.id AS serial_id, ii.serial_number, ii.inventory_id 
                         FROM inventory_items ii 
                         WHERE ii.inventory_id IN (" . implode(',', array_map('intval', $itemIds)) . ") 
                         AND ii.status = 'available'";
     $stmt = $pdo->prepare($serializedQuery);
     $stmt->execute();
-    $serializedItems = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
+    $serializedItems = [];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $serializedItems[$row['inventory_id']][] = $row;
+    }
 }
 
 // Fetch borrower list
@@ -93,17 +96,20 @@ $borrowers = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                     </td>
                                                     <td>
                                                         <?php if ($item['is_serialized']) { ?>
-                                                            <select name="serial_numbers[<?= htmlspecialchars($item['id']) ?>]"
-                                                                class="form-control" required>
+                                                            <select
+                                                                name="serial_numbers[<?= htmlspecialchars($item['id']) ?>][]"
+                                                                class="form-control" multiple required>
                                                                 <option value="">Select Serial Number</option>
                                                                 <?php if (isset($serializedItems[$item['id']])) {
                                                                     foreach ($serializedItems[$item['id']] as $serial) { ?>
-                                                                        <option value="<?= htmlspecialchars($serial['id']) ?>">
+                                                                        <option value="<?= htmlspecialchars($serial['serial_id']) ?>">
                                                                             <?= htmlspecialchars($serial['serial_number']) ?>
                                                                         </option>
                                                                     <?php }
                                                                 } ?>
                                                             </select>
+                                                            <input type="hidden"
+                                                                name="quantity[<?= htmlspecialchars($item['id']) ?>]" value="1">
                                                         <?php } else { ?>
                                                             <input type="number"
                                                                 name="quantity[<?= htmlspecialchars($item['id']) ?>]"

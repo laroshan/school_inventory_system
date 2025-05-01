@@ -7,15 +7,12 @@ header('Content-Type: application/json');
 
 try {
     // Fetch lended items data
-    $sql = "SELECT lr.id, i.item_name, i.category, u.username AS borrower, lr.quantity_borrowed, lr.lending_date, lr.due_date, lr.returned_date, lr.status, lr.comments, i.is_serialized,
-            (CASE WHEN i.is_serialized = 1 THEN (
-                SELECT JSON_ARRAYAGG(JSON_OBJECT('id', ii.id, 'serial_number', ii.serial_number))
-                FROM inventory_items ii
-                WHERE ii.inventory_id = i.id AND ii.status = 'available'
-            ) ELSE NULL END) AS available_serial_numbers
-        FROM loan_records lr
-        JOIN inventory i ON lr.item_id = i.id
-        JOIN users u ON lr.borrower_id = u.id";
+    $sql = "SELECT lr.id, i.item_name, i.category, u.username AS borrower, lr.quantity_borrowed, lr.lending_date, lr.due_date, lr.returned_date, lr.status, lr.comments,
+                   ii.serial_number
+            FROM loan_records lr
+            JOIN inventory i ON lr.item_id = i.id
+            LEFT JOIN inventory_items ii ON lr.item_instance_id = ii.id
+            JOIN users u ON lr.borrower_id = u.id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);

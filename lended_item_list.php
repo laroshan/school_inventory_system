@@ -124,7 +124,7 @@
                     url: 'lended_item_data.php',
                     then: data => data.map(item => [
                         item.id,
-                        item.item_name,
+                        item.item_name + (item.serial_number ? ` (${item.serial_number})` : ''), // Append serial number if available
                         item.category,
                         item.borrower,
                         item.quantity_borrowed,
